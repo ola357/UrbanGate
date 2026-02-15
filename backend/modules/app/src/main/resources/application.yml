@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: urbangate-backend
+  profiles:
+    active: dev
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+urbangate:
+  env: dev

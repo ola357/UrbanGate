@@ -1,0 +1,102 @@
+services:
+app:
+  build:
+    context: .
+    dockerfile: Dockerfile
+  container_name: ug-app
+  environment:
+    SPRING_PROFILES_ACTIVE: dev
+    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/urbangate
+    SPRING_DATASOURCE_USERNAME: urbangate
+    SPRING_DATASOURCE_PASSWORD: urbangate
+    SPRING_DATA_REDIS_HOST: redis
+    SPRING_DATA_REDIS_PORT: 6379
+  ports:
+    - "8080:8080"
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_started
+  # To reduce local resource usage, you can start infra only:
+  #   docker compose up -d postgres redis
+  # Or start everything including the app:
+  #   docker compose up --build app
+  postgres:
+    image: postgres:16
+    container_name: ug-postgres
+    environment:
+      POSTGRES_DB: urbangate
+      POSTGRES_USER: urbangate
+      POSTGRES_PASSWORD: urbangate
+    ports:
+      - "5432:5432"
+    volumes:
+      - ug_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U urbangate -d urbangate"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: ug-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ug_redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+
+  sonar_db:
+    image: postgres:16
+    container_name: ug-sonar-db
+    environment:
+      POSTGRES_DB: sonar
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+    volumes:
+      - ug_sonar_db_data:/var/lib/postgresql/data
+
+  sonarqube:
+    image: sonarqube:lts-community
+    container_name: ug-sonarqube
+    depends_on:
+      - sonar_db
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonar_db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    ports:
+      - "9000:9000"
+    volumes:
+      - ug_sonar_data:/opt/sonarqube/data
+      - ug_sonar_extensions:/opt/sonarqube/extensions
+      - ug_sonar_logs:/opt/sonarqube/logs
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: ug-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@urbangate.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: ug-redisinsight
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
+
+volumes:
+  ug_postgres_data:
+  ug_redis_data:
+  ug_sonar_data:
+  ug_sonar_extensions:
+  ug_sonar_logs:
+  ug_sonar_db_data:
