@@ -125,7 +125,7 @@ tasks.named("sonarqube") {
     doFirst {
         if (sonarProjectKey.isBlank()) {
             throw GradleException(
-                "sonar.projectKey is required. Set -Dsonar.projectKey or SONAR_PROJECT_KEY."
+                "sonar.projectKey is required. Set -Dsonar.projectKey or SONAR_PROJECT_KEY.",
             )
         }
     }
