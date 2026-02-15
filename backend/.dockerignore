@@ -1,6 +1,6 @@
 .git
 .gitignore
-.github
+../.github
 build
 **/build
 .gradle
