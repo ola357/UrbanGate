@@ -53,7 +53,7 @@ public class ActivationCodeServiceImpl implements ActivationCodeService {
     }
 
 
-    @Scheduled(fixedDelayString = "60000")
+    @Scheduled(fixedDelayString = "${activation-code.revoke-schedule-time}")
     public void scheduleActivationCodeRevoke(){
         List<ActivationCode> activationCodes = activationCodeRepository.findAll();
         if (activationCodes.isEmpty()) {
