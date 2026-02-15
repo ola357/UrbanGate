@@ -1,3 +1,4 @@
+// Copyright (c) UrbanGate
 package com.urbangate.app;
 
 import org.springframework.boot.SpringApplication;

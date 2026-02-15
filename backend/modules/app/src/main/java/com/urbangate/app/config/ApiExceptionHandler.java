@@ -1,3 +1,4 @@
+// Copyright (c) UrbanGate
 package com.urbangate.app.config;
 
 import com.urbangate.shared.error.ErrorCode;
@@ -14,7 +15,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ApiExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ProblemDetail handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
+  public ProblemDetail handleValidation(
+      MethodArgumentNotValidException ex, HttpServletRequest request) {
     var pd = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
     pd.setTitle("Validation error");
     pd.setDetail("One or more fields are invalid.");

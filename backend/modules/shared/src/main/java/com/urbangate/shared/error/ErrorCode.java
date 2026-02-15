@@ -1,3 +1,4 @@
+// Copyright (c) UrbanGate
 package com.urbangate.shared.error;
 
 public enum ErrorCode {

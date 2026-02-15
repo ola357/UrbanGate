@@ -98,7 +98,7 @@ sonarqube {
         property(
             "sonar.coverage.jacoco.xmlReportPaths",
             fileTree(".") { include("**/build/reports/jacoco/test/jacocoTestReport.xml") }
-                .files.joinToString(",") { it.path }
+                .files.joinToString(",") { it.path },
         )
     }
 }

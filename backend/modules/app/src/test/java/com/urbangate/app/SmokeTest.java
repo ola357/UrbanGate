@@ -1,3 +1,4 @@
+// Copyright (c) UrbanGate
 package com.urbangate.app;
 
 import org.junit.jupiter.api.Test;

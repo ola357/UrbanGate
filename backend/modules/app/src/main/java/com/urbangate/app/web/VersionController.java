@@ -1,3 +1,4 @@
+// Copyright (c) UrbanGate
 package com.urbangate.app.web;
 
 import java.time.Instant;
