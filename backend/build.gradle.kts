@@ -121,7 +121,7 @@ sonarqube {
     }
 }
 
-tasks.named("sonarqube") {
+tasks.named("sonar") {
     doFirst {
         if (sonarProjectKey.isBlank()) {
             throw GradleException(
