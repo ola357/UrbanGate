@@ -91,6 +91,18 @@ tasks.register("lint") {
 }
 
 // SonarCloud config (fill required props in CI)
+val sonarProjectKey =
+    providers.gradleProperty("sonar.projectKey")
+        .orElse(providers.environmentVariable("SONAR_PROJECT_KEY"))
+        .orNull
+        ?.trim()
+        .orEmpty()
+val sonarOrganization =
+    providers.gradleProperty("sonar.organization")
+        .orElse(providers.environmentVariable("SONAR_ORGANIZATION"))
+        .orNull
+        ?.trim()
+
 sonarqube {
     properties {
         property("sonar.sourceEncoding", "UTF-8")
@@ -100,5 +112,21 @@ sonarqube {
             fileTree(".") { include("**/build/reports/jacoco/test/jacocoTestReport.xml") }
                 .files.joinToString(",") { it.path },
         )
+        if (sonarProjectKey.isNotBlank()) {
+            property("sonar.projectKey", sonarProjectKey)
+        }
+        if (!sonarOrganization.isNullOrBlank()) {
+            property("sonar.organization", sonarOrganization)
+        }
+    }
+}
+
+tasks.named("sonarqube") {
+    doFirst {
+        if (sonarProjectKey.isBlank()) {
+            throw GradleException(
+                "sonar.projectKey is required. Set -Dsonar.projectKey or SONAR_PROJECT_KEY."
+            )
+        }
     }
 }
