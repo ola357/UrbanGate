@@ -6,12 +6,6 @@ on:
       - main
       - develop
       - staging
-      - "feature/**"
-      - "chore/**"
-      - "bug/**"
-      - "task/**"
-      - "fix/**"
-      - "hotfix/**"
   push:
     branches:
       - main
@@ -23,6 +17,15 @@ on:
       - "task/**"
       - "fix/**"
       - "hotfix/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+defaults:
+  run:
+    working-directory: backend
 
 jobs:
   build:
@@ -32,29 +35,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: "21"
           cache: gradle
 
-      - name: Build + test + quality checks
-        run: ./gradlew clean check spotlessCheck
-
-      - name: Cache SonarQube packages
+      - name: Cache Sonar packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
+      - name: Build + test + quality checks
+        run: ./gradlew clean check spotlessCheck
 
       - name: SonarCloud analysis
         if: ${{ secrets.SONAR_TOKEN != '' }}
@@ -62,7 +59,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ./gradlew sonarqube \
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.token=$SONAR_TOKEN --info
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.token=$SONAR_TOKEN \
+            --info

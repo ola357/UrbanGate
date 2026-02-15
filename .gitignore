@@ -19,7 +19,6 @@ gradle-app.setting
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
-.zip
+*.zip
 .idea/
-backend.zip
 .DS_Store
