@@ -3,6 +3,9 @@ name: Backend CI
 on:
   pull_request:
     branches:
+      - main
+      - develop
+      - staging
       - "feature/**"
       - "chore/**"
       - "bug/**"
@@ -11,6 +14,9 @@ on:
       - "hotfix/**"
   push:
     branches:
+      - main
+      - develop
+      - staging
       - "feature/**"
       - "chore/**"
       - "bug/**"
