@@ -3,7 +3,13 @@ name: Backend CI
 on:
   pull_request:
   push:
-    branches: [ main, develop, staging ]
+    branches:
+      - "feature/**"
+      - "chore/**"
+      - "bug/**"
+      - "task/**"
+      - "fix/**"
+      - "hotfix/**"
 
 jobs:
   build:
