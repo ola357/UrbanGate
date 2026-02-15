@@ -1,27 +1,28 @@
 services:
-app:
-  build:
-    context: .
-    dockerfile: Dockerfile
-  container_name: ug-app
-  environment:
-    SPRING_PROFILES_ACTIVE: dev
-    SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/urbangate
-    SPRING_DATASOURCE_USERNAME: urbangate
-    SPRING_DATASOURCE_PASSWORD: urbangate
-    SPRING_DATA_REDIS_HOST: redis
-    SPRING_DATA_REDIS_PORT: 6379
-  ports:
-    - "8080:8080"
-  depends_on:
-    postgres:
-      condition: service_healthy
-    redis:
-      condition: service_started
-  # To reduce local resource usage, you can start infra only:
-  #   docker compose up -d postgres redis
-  # Or start everything including the app:
-  #   docker compose up --build app
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ug-app
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/urbangate
+      SPRING_DATASOURCE_USERNAME: urbangate
+      SPRING_DATASOURCE_PASSWORD: urbangate
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    # To reduce local resource usage, you can start infra only:
+    #   docker compose up -d postgres redis
+    # Or start everything including the app:
+    #   docker compose up --build app
+
   postgres:
     image: postgres:16
     container_name: ug-postgres

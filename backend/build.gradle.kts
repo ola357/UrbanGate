@@ -2,12 +2,12 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.plugins.quality.CheckstyleExtension
 
 plugins {
-    alias(libs.plugins.spring.boot) apply false
-    alias(libs.plugins.spring.dependency.management) apply false
-    alias(libs.plugins.spotless)
-    alias(libs.plugins.spotbugs) apply false
-    alias(libs.plugins.sonarqube)
-    alias(libs.plugins.lombok) apply false
+    id("org.springframework.boot") version "3.5.10" apply false
+    id("io.spring.dependency-management") version "1.1.7" apply false
+    id("com.diffplug.spotless") version "6.25.0"
+    id("com.github.spotbugs") version "6.0.26" apply false
+    id("org.sonarqube") version "7.1.0.6387"
+    id("io.freefair.lombok") version "8.7.1" apply false
     jacoco
     checkstyle
 }
@@ -23,6 +23,13 @@ subprojects {
     apply(plugin = "java")
     apply(plugin = "checkstyle")
     apply(plugin = "jacoco")
+    apply(plugin = "io.spring.dependency-management")
+
+    extensions.configure<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension> {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:3.5.10")
+        }
+    }
 
     extensions.configure<JavaPluginExtension> {
         toolchain {

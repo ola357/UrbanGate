@@ -1,7 +1,7 @@
 # UrbanGate Backend (Bootstrap)
 
 **Tech**
-- Java 25 (Gradle toolchains)
+- Java 21 (Gradle toolchains)
 - Spring Boot 4 (Spring MVC)
 - PostgreSQL + Flyway
 - Redis (optional caching / rate limiting later)
@@ -9,7 +9,7 @@
 
 ## Quick start (local)
 
-Prereqs: Docker + Java 25
+Prereqs: Docker + Java 21
 
 ```bash
 cd backend

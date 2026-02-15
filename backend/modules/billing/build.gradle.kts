@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.spring.dependency.management)
-    alias(libs.plugins.lombok)
+    id("io.spring.dependency-management")
+    id("io.freefair.lombok")
     java
 }
 
