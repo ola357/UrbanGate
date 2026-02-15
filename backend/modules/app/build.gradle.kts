@@ -1,8 +1,8 @@
 plugins {
-    alias(libs.plugins.spring.boot)
-    alias(libs.plugins.spring.dependency.management)
-    alias(libs.plugins.lombok)
-    alias(libs.plugins.spotbugs)
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
+    id("io.freefair.lombok")
+    id("com.github.spotbugs")
 }
 
 dependencies {

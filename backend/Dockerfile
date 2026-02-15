@@ -1,5 +1,5 @@
 # Build stage
-FROM gradle:8.12-jdk25 AS builder
+FROM gradle:8.14.4-jdk21 AS builder
 WORKDIR /workspace
 
 # Copy only what we need for dependency caching first
@@ -11,7 +11,7 @@ COPY modules ./modules
 RUN gradle --no-daemon :modules:app:bootJar -x test
 
 # Runtime stage
-FROM eclipse-temurin:25-jre
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Copy jar from builder
