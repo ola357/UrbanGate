@@ -30,7 +30,7 @@ defaults:
     working-directory: backend
 
 jobs:
-  build-backend-app:
+  build:
     runs-on: ubuntu-latest
     environment: dev
 
