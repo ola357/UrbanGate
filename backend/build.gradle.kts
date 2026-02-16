@@ -53,9 +53,30 @@ subprojects {
             html.required.set(true)
         }
     }
+    tasks.withType<JacocoCoverageVerification>().named("jacocoTestCoverageVerification") {
+        dependsOn(tasks.named<Test>("test"))
+        dependsOn(tasks.named("jacocoTestReport"))
+
+        violationRules {
+            rule {
+                element = "BUNDLE"
+                limit {
+                    counter = "LINE"
+                    value = "COVEREDRATIO"
+                    minimum = "0.80".toBigDecimal()
+                }
+            }
+        }
+    }
+
+    tasks.named("check") {
+        dependsOn("jacocoTestCoverageVerification")
+    }
+
     tasks.withType<Test>().configureEach {
         finalizedBy(tasks.named("jacocoTestReport"))
     }
+
 }
 
 // Spotless formatting
@@ -98,8 +119,7 @@ sonarqube {
         property("sonar.java.coveragePlugin", "jacoco")
         property(
             "sonar.coverage.jacoco.xmlReportPaths",
-            fileTree(".") { include("**/build/reports/jacoco/test/jacocoTestReport.xml") }
-                .files.joinToString(",") { it.path },
+            "**/build/reports/jacoco/test/jacocoTestReport.xml"
         )
     }
 }
