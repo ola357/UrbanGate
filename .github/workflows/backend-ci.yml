@@ -15,12 +15,6 @@ on:
       - main
       - develop
       - staging
-      - "feature/**"
-      - "chore/**"
-      - "bug/**"
-      - "task/**"
-      - "fix/**"
-      - "hotfix/**"
     paths:
       - "backend/**"
       - ".github/workflows/backend-ci.yml"
