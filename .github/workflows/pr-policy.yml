@@ -1,0 +1,23 @@
+name: PR Policy
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  validate-branch-and-commits:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate source branch prefix
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          echo "Source branch: $BRANCH"
+
+          if [[ ! "$BRANCH" =~ ^(feature|task|chore|bugfix|hotfix)/.+$ ]]; then
+            echo "❌ Invalid branch name: $BRANCH"
+            echo "Allowed: feature/, task/, chore/, bugfix/, hotfix/"
+            exit 1
+          fi
+
+          echo "✅ Branch name is valid."
