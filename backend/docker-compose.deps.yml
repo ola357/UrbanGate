@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ug-postgres
+    environment:
+      POSTGRES_DB: urbangate
+      POSTGRES_USER: urbangate
+      POSTGRES_PASSWORD: urbangate
+    ports:
+      - "5432:5432"
+    volumes:
+      - ug_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U urbangate -d urbangate"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: ug-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ug_redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: ug-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@urbangate.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: ug-redisinsight
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
+
+volumes:
+  ug_postgres_data:
+  ug_redis_data:
