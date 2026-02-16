@@ -19,5 +19,35 @@ jobs:
             echo "Allowed: feature/, task/, chore/, bugfix/, hotfix/"
             exit 1
           fi
-
           echo "✅ Branch name is valid."
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate commit subjects start with OLAM-<digits>
+        run: |
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+
+          echo "Validating commits in range: $BASE_SHA..$HEAD_SHA"
+          COMMITS=$(git rev-list --no-merges "${BASE_SHA}..${HEAD_SHA}")
+
+          if [ -z "$COMMITS" ]; then
+            echo "No commits found (unexpected)."
+            exit 0
+          fi
+
+          FAIL=0
+          for sha in $COMMITS; do
+            subject=$(git log -1 --pretty=%s "$sha")
+            echo "• $sha: $subject"
+
+            if [[ ! "$subject" =~ ^OLAM-[0-9]+ ]]; then
+              echo "❌ Invalid commit message subject: '$subject'"
+              echo "   Must start with: OLAM-<number> e.g. 'OLAM-123 Add visitor code expiry'"
+              FAIL=1
+            fi
+          done
+
+          exit $FAIL
