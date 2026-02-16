@@ -1,0 +1,14 @@
+.git
+.gitignore
+../.github
+build
+**/build
+.gradle
+node_modules
+out
+*.log
+*.iml
+.idea
+docker-compose.yml
+docker-compose.override.yml
+README.md
