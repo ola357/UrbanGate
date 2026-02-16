@@ -76,7 +76,6 @@ subprojects {
     tasks.withType<Test>().configureEach {
         finalizedBy(tasks.named("jacocoTestReport"))
     }
-
 }
 
 // Spotless formatting
@@ -119,7 +118,7 @@ sonarqube {
         property("sonar.java.coveragePlugin", "jacoco")
         property(
             "sonar.coverage.jacoco.xmlReportPaths",
-            "**/build/reports/jacoco/test/jacocoTestReport.xml"
+            "**/build/reports/jacoco/test/jacocoTestReport.xml",
         )
     }
 }
