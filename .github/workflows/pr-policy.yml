@@ -4,8 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
-  validate-branch-and-commits:
+  validate:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,7 +38,7 @@ jobs:
           COMMITS=$(git rev-list --no-merges "${BASE_SHA}..${HEAD_SHA}")
 
           if [ -z "$COMMITS" ]; then
-            echo "No commits found (unexpected)."
+            echo "No commits found to validate."
             exit 0
           fi
 
@@ -44,8 +48,8 @@ jobs:
             echo "• $sha: $subject"
 
             if [[ ! "$subject" =~ ^OLAM-[0-9]+ ]]; then
-              echo "❌ Invalid commit message subject: '$subject'"
-              echo "   Must start with: OLAM-<number> e.g. 'OLAM-123 Add visitor code expiry'"
+              echo "❌ Invalid commit subject: '$subject'"
+              echo "   Expected: OLAM-123 Something meaningful"
               FAIL=1
             fi
           done
