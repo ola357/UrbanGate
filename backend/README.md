@@ -13,13 +13,13 @@ Prereqs: Docker + Java 21
 
 ```bash
 cd backend
-docker compose up -d postgres redis
+docker compose -f docker-compose.deps.yml up -d
 ./gradlew clean check
 ./gradlew :modules:app:bootRun
 
 Or run the app in Docker:
 ```bash
-docker compose up --build app
+docker compose -f docker-compose.deps.yml -f docker-compose.app.yml up --build app
 ```
 ```
 
@@ -28,23 +28,30 @@ API:
 - `GET http://localhost:8080/actuator/health`
 
 ## Local infrastructure
-`docker compose` provisions:
+Compose stacks:
 - Postgres (`5432`)
 - Redis (`6379`)
 - SonarQube (`9000`) for local inspection (optional)
 
 
-## Docker Compose Override
+## Docker Compose Scripts
 
-By default, the `docker-compose.override.yml` disables the `app` container
-so that only infrastructure (Postgres, Redis, SonarQube) starts.
-
-Start infra only:
+Infra (Postgres + Redis + PGAdmin + RedisInsight):
 ```bash
-docker compose up -d
+docker compose -f docker-compose.deps.yml up -d
 ```
 
-Start backend container explicitly:
+SonarQube only:
 ```bash
-docker compose up --build app
+docker compose -f docker-compose.sonar.yml up -d
+```
+
+App (with infra):
+```bash
+docker compose -f docker-compose.deps.yml -f docker-compose.app.yml up --build app
+```
+
+App + SonarQube:
+```bash
+docker compose -f docker-compose.deps.yml -f docker-compose.app.yml -f docker-compose.sonar.yml up --build app
 ```
