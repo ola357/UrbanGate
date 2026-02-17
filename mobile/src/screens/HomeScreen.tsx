@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Pressable, ActivityIndicator, StyleSheet } from "react-native";
 import { Link } from "expo-router";
-import { useVersion } from "@/features/version/useVersion";
+import { useVersion } from "@/features/version/hooks/useVersion";
 
 export default function HomeScreen() {
   const { data, isLoading, isFetching, error, refetch } = useVersion();
