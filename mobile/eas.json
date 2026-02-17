@@ -1,0 +1,35 @@
+{
+  "cli": {
+    "version": ">= 10.0.0"
+  },
+  "build": {
+    "dev": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "dev",
+      "env": {
+        "EXPO_PUBLIC_APP_ENV": "dev",
+        "EXPO_PUBLIC_API_BASE_URL": "http://10.0.2.2:8080"
+      }
+    },
+    "staging": {
+      "distribution": "internal",
+      "channel": "staging",
+      "env": {
+        "EXPO_PUBLIC_APP_ENV": "staging",
+        "EXPO_PUBLIC_API_BASE_URL": "https://staging-api.urbangate.example"
+      }
+    },
+    "prod": {
+      "distribution": "store",
+      "channel": "prod",
+      "env": {
+        "EXPO_PUBLIC_APP_ENV": "prod",
+        "EXPO_PUBLIC_API_BASE_URL": "https://api.urbangate.example"
+      }
+    }
+  },
+  "submit": {
+    "prod": {}
+  }
+}
