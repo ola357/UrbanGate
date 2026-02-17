@@ -3,16 +3,13 @@ package com.estateresource.estatemanger.estate.rest;
 import com.estateresource.estatemanger.estate.dto.request.ResidentOnboardingRequest;
 import com.estateresource.estatemanger.estate.dto.response.ResidentOnboardingResponse;
 import com.estateresource.estatemanger.estate.service.impl.ResidentOnboardingServiceImpl;
-import com.estateresource.estatemanger.security.model.CustomUserDetails;
 import com.estateresource.estatemanger.shared.aspect.AuthorizedEstate;
 import com.estateresource.estatemanger.shared.aspect.OnboardedEstate;
 import com.estateresource.estatemanger.shared.entity.Estate;
-import com.estateresource.estatemanger.shared.entity.User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,10 +25,9 @@ public class EstateController {
 
     @AuthorizedEstate
     @PostMapping("/resident")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResidentOnboardingResponse createResident(@OnboardedEstate Estate estate,
-                                                     @RequestBody ResidentOnboardingRequest residentOnboardingRequest,
-                                                     @AuthenticationPrincipal CustomUserDetails user) {
+                                                     @RequestBody @Valid ResidentOnboardingRequest residentOnboardingRequest) {
 
         return residentOnboardingService.onboardResident(residentOnboardingRequest, estate);
     }

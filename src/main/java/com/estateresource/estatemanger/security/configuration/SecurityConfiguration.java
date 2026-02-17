@@ -57,6 +57,7 @@ public class SecurityConfiguration {
                                 "/api/auth/verify"
                         ).permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
 //                        .requestMatchers("/estate/**").hasRole("ADMIN")
 //                        .requestMatchers("/resident/**").hasRole("RESIDENT")
                         .anyRequest().authenticated()

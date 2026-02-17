@@ -40,4 +40,20 @@ jwt:
 activation-code:
   ttl-in-minutes: 5
   base-url: http://localhost:8082/
-  revoke-schedule-time: 6000
+  revoke-schedule-time: 60000
+
+
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operationsSorter: method
+    tagsSorter: alpha
+    filter: true
+    tryItOutEnabled: true
+  show-actuator: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json

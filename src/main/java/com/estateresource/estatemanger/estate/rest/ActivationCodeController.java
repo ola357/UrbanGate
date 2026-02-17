@@ -6,6 +6,7 @@ import com.estateresource.estatemanger.estate.dto.request.ActivationRequest;
 import com.estateresource.estatemanger.estate.dto.response.ActivationResponse;
 import com.estateresource.estatemanger.estate.service.impl.ActivationCodeServiceImpl;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ public class ActivationCodeController {
 
 
     @PostMapping("activate")
-    public ActivationResponse activate(@RequestBody ActivationRequest activationRequest) {
+    public ActivationResponse activate(@RequestBody @Valid ActivationRequest activationRequest) {
         log.info("Activation request: {}", activationRequest);
         return activationService.retrieveUserByActivationCode(activationRequest);
     }

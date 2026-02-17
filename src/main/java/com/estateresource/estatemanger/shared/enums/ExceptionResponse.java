@@ -16,7 +16,7 @@ public enum ExceptionResponse {
     @Getter
     private String message;
 
-    ExceptionResponse(String message, String code) {
+    ExceptionResponse(String code, String message) {
         this.message = message;
         this.code = code;
     }

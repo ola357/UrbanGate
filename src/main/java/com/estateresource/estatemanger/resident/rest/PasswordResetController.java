@@ -3,6 +3,7 @@ package com.estateresource.estatemanger.resident.rest;
 import com.estateresource.estatemanger.resident.dto.request.PasswordRequest;
 import com.estateresource.estatemanger.resident.dto.response.PasswordResponse;
 import com.estateresource.estatemanger.resident.service.PasswordResetService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ public class PasswordResetController {
 
     @PreAuthorize("hasRole('RESIDENT')")
     @PostMapping("/password")
-    public PasswordResponse resetPassword(@RequestBody PasswordRequest passwordRequest) {
+    public PasswordResponse resetPassword(@RequestBody @Valid PasswordRequest passwordRequest) {
         return passwordResetService.resetPassword(passwordRequest);
     }
 

@@ -4,6 +4,7 @@ package com.estateresource.estatemanger.security.rest;
 import com.estateresource.estatemanger.security.model.AuthRequest;
 import com.estateresource.estatemanger.security.model.response.TokenResponse;
 import com.estateresource.estatemanger.security.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +22,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/authenticate")
-    public TokenResponse generateToken(@RequestBody AuthRequest authRequest) throws Exception {
+    public TokenResponse generateToken(@RequestBody @Valid AuthRequest authRequest) throws Exception {
         log.debug("User Logging in....");
         return authService.authenticateUser(authRequest);
     }
