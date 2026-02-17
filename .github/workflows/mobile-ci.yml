@@ -33,6 +33,10 @@ jobs:
   lint-typecheck-test:
     runs-on: ubuntu-latest
     environment: dev
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+      SONAR_PROJECT_KEY: ${{ secrets.SONAR_MOBILE_PROJECT_KEY || secrets.SONAR_PROJECT_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -79,6 +83,14 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: Validate Sonar configuration
+        if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+        run: |
+          if [ -z "${SONAR_TOKEN}" ] || [ -z "${SONAR_ORGANIZATION}" ] || [ -z "${SONAR_PROJECT_KEY}" ]; then
+            echo "Missing Sonar secrets. Ensure SONAR_TOKEN, SONAR_ORGANIZATION, and SONAR_MOBILE_PROJECT_KEY (or SONAR_PROJECT_KEY) are set."
+            exit 1
+          fi
+
       - name: SonarCloud scan (mobile)
         # Skip Sonar on fork PRs (secrets not available)
         if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
@@ -86,16 +98,14 @@ jobs:
         with:
           projectBaseDir: mobile
           args: >
-            -Dsonar.projectKey=${{ secrets.SONAR_MOBILE_PROJECT_KEY }}
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ env.SONAR_ORGANIZATION }}
             -Dsonar.sources=src
             -Dsonar.tests=src
             -Dsonar.test.inclusions=src/**/__tests__/**,src/**/*.test.ts,src/**/*.test.tsx
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.qualitygate.wait=true
             -Dsonar.qualitygate.timeout=300
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   eas-build:
     runs-on: ubuntu-latest
