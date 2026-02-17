@@ -38,7 +38,9 @@ export default function HomeScreen() {
       {error && (
         <View style={[styles.card, styles.errorCard]}>
           <Text style={styles.errorTitle}>Couldn’t reach the API</Text>
-          <Text style={styles.errorText}>{(error as any)?.message ?? String(error)}</Text>
+          <Text style={styles.errorText}>
+            {error instanceof Error ? error.message : String(error)}
+          </Text>
 
           <Pressable onPress={() => refetch()} style={styles.retryBtn}>
             <Text style={styles.retryText}>Retry</Text>
