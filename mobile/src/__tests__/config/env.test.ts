@@ -39,6 +39,6 @@ describe("env", () => {
     });
 
     expect(env.appEnv).toBe("dev");
-    expect(env.apiBaseUrl).toBe("http://10.0.2.2:8080");
+    expect(env.apiBaseUrl).toBe("https://10.0.2.2:8080");
   });
 });
