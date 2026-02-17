@@ -110,7 +110,7 @@ jobs:
             -Dsonar.qualitygate.timeout=300
 
       - name: Show Sonar quality gate details
-        if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             curl -s -u "${SONAR_TOKEN}:" \
