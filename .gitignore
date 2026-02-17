@@ -22,3 +22,7 @@ gradle-app.setting
 *.zip
 .idea/
 .DS_Store
+.env
+node_modules/
+**/node_modules/
+**/dist
