@@ -3,9 +3,10 @@
   "compilerOptions": {
     "strict": true,
     "noEmit": true,
-    "baseUrl": "./mobile",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     }
-  }
+  },
+  "exclude": ["src/**/__tests__/**"]
 }

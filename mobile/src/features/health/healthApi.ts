@@ -1,4 +1,4 @@
-import { httpGet } from "@/core/http/httpClient";
+import { getJson } from "@/core/http/httpClient";
 
 export type ApiHealth = {
   ok: boolean;
@@ -15,6 +15,6 @@ export type ApiHealth = {
  * Later: replace with a real /actuator/health (or /api/v1/health) contract.
  */
 export async function fetchApiHealth(): Promise<ApiHealth> {
-  const v = await httpGet<{ service: string; version: string; time: string }>("/api/v1/version");
+  const v = await getJson<{ service: string; version: string; time: string }>("/api/v1/version");
   return { ok: true, version: v };
 }
