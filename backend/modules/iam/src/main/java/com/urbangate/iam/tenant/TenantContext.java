@@ -11,7 +11,10 @@ public class TenantContext {
 
   public static String getTenantId() {
     String tenant = CURRENT_TENANT.get();
-    if (tenant == null) throw new IllegalStateException("No tenant in context");
+    if (tenant == null) {
+      throw new IllegalStateException("No tenant in context");
+    }
+    ;
     return tenant;
   }
 

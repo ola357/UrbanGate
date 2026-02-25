@@ -3,7 +3,12 @@ package com.urbangate.shared.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.urbangate.shared.enums.EntityStatus;
-import jakarta.persistence.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.Instant;

@@ -21,14 +21,19 @@ import com.urbangate.shared.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.*;
-import org.keycloak.representations.idm.*;
+import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.RolesResource;
+import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -176,7 +181,10 @@ public class KeycloakUserService {
 
   public UserResponse getUserByUsername(String username) {
     List<UserRepresentation> users = getRealmResource().users().search(username, true);
-    if (users.isEmpty()) throw new ResourceNotFoundException(ExceptionResponse.USER_NAME_NOTFOUND);
+    if (users.isEmpty()) {
+      throw new ResourceNotFoundException(ExceptionResponse.USER_NAME_NOTFOUND);
+    }
+    ;
     UserRepresentation user = users.get(0);
     return toUserResponse(user.getId(), user);
   }
@@ -197,9 +205,15 @@ public class KeycloakUserService {
     UserResource userResource = getRealmResource().users().get(userId);
     UserRepresentation user = userResource.toRepresentation();
 
-    if (firstName != null) user.setFirstName(firstName);
-    if (lastName != null) user.setLastName(lastName);
-    if (email != null) user.setEmail(email);
+    if (firstName != null) {
+      user.setFirstName(firstName);
+    }
+    if (lastName != null) {
+      user.setLastName(lastName);
+    }
+    if (email != null) {
+      user.setEmail(email);
+    }
 
     userResource.update(user);
     log.info("Updated user: {}", userId);
@@ -290,7 +304,9 @@ public class KeycloakUserService {
 
   private String extractUserIdFromLocation(Response response) {
     String location = response.getHeaderString("Location");
-    if (location == null) throw new RuntimeException("Keycloak did not return a Location header");
+    if (location == null) {
+      throw new RuntimeException("Keycloak did not return a Location header");
+    }
     return location.substring(location.lastIndexOf("/") + 1);
   }
 

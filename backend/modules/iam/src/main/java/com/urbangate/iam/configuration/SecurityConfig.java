@@ -50,7 +50,7 @@ public class SecurityConfig {
     "/api/v1/auth/reset-password",
     "/api/v1/auth/password-set-up",
     "/api/v1/auth/confirm",
-     "/api/v1/version",
+    "/api/v1/version",
     // Swagger
     "/swagger-ui/**",
     "/v3/api-docs/**",

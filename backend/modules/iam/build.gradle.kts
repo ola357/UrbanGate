@@ -4,8 +4,6 @@ plugins {
     java
 }
 
-
-
 dependencies {
     implementation(project(":modules:shared"))
     implementation("org.springframework:spring-context")

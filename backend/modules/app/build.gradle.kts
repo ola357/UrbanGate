@@ -2,7 +2,7 @@ plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
     id("io.freefair.lombok")
-//    id("com.github.spotbugs")
+    id("com.github.spotbugs")
 }
 
 dependencies {
