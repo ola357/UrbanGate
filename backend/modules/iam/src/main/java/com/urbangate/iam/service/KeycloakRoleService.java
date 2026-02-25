@@ -75,10 +75,7 @@ public class KeycloakRoleService {
     log.info("Role '{}' deleted", name);
   }
 
-  /**
-   * Creates a composite role (a role that includes other roles). Example: ADMIN composite = ADMIN +
-   * MANAGER + USER
-   */
+
   public void addCompositesToRole(String parentRoleName, List<String> childRoleNames) {
     List<RoleRepresentation> children =
         childRoleNames.stream()
