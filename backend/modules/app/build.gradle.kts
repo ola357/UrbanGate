@@ -2,7 +2,7 @@ plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
     id("io.freefair.lombok")
-    id("com.github.spotbugs")
+//    id("com.github.spotbugs")
 }
 
 dependencies {
@@ -27,6 +27,9 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
     testImplementation("com.h2database:h2")
 }

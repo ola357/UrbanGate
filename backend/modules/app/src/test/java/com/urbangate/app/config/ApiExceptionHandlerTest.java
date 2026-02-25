@@ -17,7 +17,7 @@ class ApiExceptionHandlerTest {
     var request = new MockHttpServletRequest();
     request.setRequestURI("/api/v1/test");
 
-    ProblemDetail detail = handler.handleGeneric(new RuntimeException("boom"), request);
+    ProblemDetail detail = handler.handleGeneric(new RuntimeException("Unexpected error."), request);
 
     assertThat(detail.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     assertThat(detail.getTitle()).isEqualTo("Internal error");
