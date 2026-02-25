@@ -75,7 +75,6 @@ public class KeycloakRoleService {
     log.info("Role '{}' deleted", name);
   }
 
-
   public void addCompositesToRole(String parentRoleName, List<String> childRoleNames) {
     List<RoleRepresentation> children =
         childRoleNames.stream()
