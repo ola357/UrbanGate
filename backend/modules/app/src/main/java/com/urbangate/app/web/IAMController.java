@@ -1,4 +1,4 @@
-// Copyright (c) UrbanGate
+
 package com.urbangate.app.web;
 
 import com.urbangate.iam.dto.request.*;
@@ -32,7 +32,6 @@ public class IAMController {
   private final KeycloakTokenService tokenService;
   private final KeycloakUserService userService;
 
-  // ── Sign In ────────────────────────────────────────────────────────────────
 
   @PostMapping("/login")
   @Operation(
@@ -56,7 +55,6 @@ public class IAMController {
     return ResponseEntity.ok(new ApiResponse<TokenResponse>().success(tokens));
   }
 
-  // ── Register ───────────────────────────────────────────────────────────────
 
   @PostMapping("/register")
   @Operation(
@@ -82,7 +80,6 @@ public class IAMController {
         .body(new ApiResponse<ResidentOnboardingResponse>().success(user));
   }
 
-  // ── Refresh Token ──────────────────────────────────────────────────────────
 
   @Operation(
       summary = "Refresh access token",
