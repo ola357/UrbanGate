@@ -1,4 +1,4 @@
-
+// Copyright (c) UrbanGate
 package com.urbangate.iam.service;
 
 import com.urbangate.iam.configuration.KeycloakProperties;

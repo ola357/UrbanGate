@@ -1,4 +1,4 @@
-
+// Copyright (c) UrbanGate
 package com.urbangate.iam.service;
 
 import static com.urbangate.iam.tenant.TenantResolutionFilter.resolveTenant;
@@ -218,7 +218,6 @@ public class KeycloakUserService {
     return toUserResponse(userId, user);
   }
 
-
   public void resetPassword(String userId, String newPassword, boolean temporary) {
     CredentialRepresentation credential = new CredentialRepresentation();
     credential.setType(CredentialRepresentation.PASSWORD);
@@ -227,7 +226,6 @@ public class KeycloakUserService {
     getRealmResource().users().get(userId).resetPassword(credential);
     log.info("Password reset for user: {}", userId);
   }
-
 
   public void sendPasswordResetEmail(String email) {
     List<UserRepresentation> users = getRealmResource().users().searchByEmail(email, true);
@@ -240,11 +238,9 @@ public class KeycloakUserService {
     log.info("Password reset email sent for user: {}", userId);
   }
 
-
   public void adminResetPassword(String userId, String newPassword) {
     resetPassword(userId, newPassword, false);
   }
-
 
   public void sendVerificationEmail(String userId) {
     try {
@@ -254,7 +250,6 @@ public class KeycloakUserService {
       log.warn("Could not send verification email for user {}: {}", userId, e.getMessage());
     }
   }
-
 
   public void assignRealmRole(String userId, String roleName) {
     RolesResource rolesResource = getRealmResource().roles();
@@ -283,7 +278,6 @@ public class KeycloakUserService {
                     && !r.equals("uma_authorization"))
         .collect(Collectors.toList());
   }
-
 
   private RealmResource getRealmResource() {
     return tenantDiscoveryKeyCloakService.currentRealm();

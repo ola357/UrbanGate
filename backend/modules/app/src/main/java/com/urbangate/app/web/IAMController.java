@@ -1,4 +1,4 @@
-
+// Copyright (c) UrbanGate
 package com.urbangate.app.web;
 
 import com.urbangate.iam.dto.request.ActivationRequest;

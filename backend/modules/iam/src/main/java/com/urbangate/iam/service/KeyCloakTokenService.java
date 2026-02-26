@@ -1,4 +1,4 @@
-
+// Copyright (c) UrbanGate
 package com.urbangate.iam.service;
 
 import static com.urbangate.iam.tenant.TenantResolutionFilter.resolveTenant;
@@ -49,7 +49,6 @@ public class KeyCloakTokenService {
     log.info(tokenResponse.toString());
     return buildAuthResponse(tokenResponse);
   }
-
 
   public TokenResponse refresh(String refreshToken, HttpServletRequest httpServletRequest)
       throws AuthenticationException {
