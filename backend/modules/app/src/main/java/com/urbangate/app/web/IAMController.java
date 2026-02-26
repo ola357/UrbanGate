@@ -1,7 +1,7 @@
 
 package com.urbangate.app.web;
 
-
+import com.urbangate.iam.dto.request.ActivationRequest;
 import com.urbangate.iam.dto.request.AuthRequest;
 import com.urbangate.iam.dto.request.PasswordRequest;
 import com.urbangate.iam.dto.request.RefreshTokenRequest;
@@ -9,7 +9,7 @@ import com.urbangate.iam.dto.request.ResidentOnboardingRequest;
 import com.urbangate.iam.dto.response.PasswordResponse;
 import com.urbangate.iam.dto.response.ResidentOnboardingResponse;
 import com.urbangate.iam.dto.response.TokenResponse;
-
+import com.urbangate.iam.dto.response.UserResponse;
 import com.urbangate.iam.service.KeyCloakTokenService;
 import com.urbangate.iam.service.KeycloakUserService;
 import com.urbangate.shared.dto.ApiResponse;
@@ -93,4 +93,21 @@ public class IAMController {
     return ResponseEntity.ok(new ApiResponse<TokenResponse>().success(tokens));
   }
 
+  @Operation(
+      summary = "Confirm Registration Details",
+      description = "Retrieve User Details For Confirmation.")
+  @PostMapping("/confirm")
+  public ResponseEntity<ApiResponse<UserResponse>> confirmUserDetails(
+      @Valid @RequestBody ActivationRequest request) {
+    UserResponse userResponse = userService.getUserByActivationCode(request.token());
+    return ResponseEntity.ok(new ApiResponse<UserResponse>().success(userResponse));
+  }
+
+  @Operation(summary = "Set-Up New Password", description = "Create Password for a new User")
+  @PostMapping("/password-set-up")
+  public ResponseEntity<ApiResponse<PasswordResponse>> setUpPassword(
+      @Valid @RequestBody PasswordRequest request) {
+    PasswordResponse userResponse = userService.setUpPassword(request);
+    return ResponseEntity.ok(new ApiResponse<PasswordResponse>().success(userResponse));
+  }
 }

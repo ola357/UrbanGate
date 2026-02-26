@@ -3,6 +3,7 @@ package com.urbangate.app.web;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -12,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.urbangate.iam.dto.request.ActivationRequest;
 import com.urbangate.iam.dto.request.AuthRequest;
 import com.urbangate.iam.dto.request.PasswordRequest;
 import com.urbangate.iam.dto.request.ResidentOnboardingRequest;
@@ -23,6 +25,8 @@ import com.urbangate.iam.service.KeyCloakTokenService;
 import com.urbangate.iam.service.KeycloakUserService;
 import com.urbangate.shared.exceptions.AuthenticationException;
 import com.urbangate.shared.exceptions.ConflictException;
+import com.urbangate.shared.exceptions.ResourceNotFoundException;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -59,6 +63,7 @@ class IAMControllerTest {
   private TokenResponse mockTokenResponse;
   private ResidentOnboardingRequest validRegistrationRequest;
   private ResidentOnboardingResponse registrationResponse;
+  private ActivationRequest validActivationRequest;
   private UserResponse userResponse;
   private PasswordRequest validPasswordRequest;
   private PasswordResponse passwordResponse;
@@ -81,6 +86,15 @@ class IAMControllerTest {
     registrationResponse =
         new ResidentOnboardingResponse("683127b5-4432-418c-962b-97c3ea5bfe23", "09012006030");
 
+    validActivationRequest = new ActivationRequest("valid-activation-token-abc123");
+    userResponse =
+        new UserResponse(
+            "683127b5-4432-418c-962b-97c3ea5bfe23",
+            "09012006030",
+            "vincent@example.com",
+            "Vincent",
+            "Enwere",
+            Map.of());
 
     // Password setup
     validPasswordRequest =
@@ -182,6 +196,65 @@ class IAMControllerTest {
       performPost("/api/v1/auth/register", validRegistrationRequest)
           .andDo(print())
           .andExpect(jsonPath("$.detail").value("Phone number already registered"));
+    }
+  }
+
+  @Nested
+  @DisplayName("POST /api/v1/auth/confirm")
+  class ConfirmEndpoint {
+
+    @Test
+    @DisplayName("✅ returns 200 with user details on valid activation token")
+    void confirm_validToken_returns200WithUserDetails() throws Exception {
+      given(userService.getUserByActivationCode(anyString())).willReturn(userResponse);
+
+      performPost("/api/v1/auth/confirm", validActivationRequest)
+          .andDo(print())
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.message").value("success"))
+          .andExpect(jsonPath("$.data.id").value("683127b5-4432-418c-962b-97c3ea5bfe23"))
+          .andExpect(jsonPath("$.data.email").value("vincent@example.com"))
+          .andExpect(jsonPath("$.data.firstName").value("Vincent"));
+    }
+
+    @Test
+    @DisplayName("❌ returns 404 when activation token does not exist")
+    void confirm_invalidToken_returns404() throws Exception {
+      given(userService.getUserByActivationCode(anyString()))
+          .willThrow(new ResourceNotFoundException("Activation token not found or already used"));
+
+      performPost("/api/v1/auth/confirm", new ActivationRequest("invalid-or-used-token"))
+          .andDo(print())
+          .andExpect(jsonPath("$.detail").value("Activation token not found or already used"));
+    }
+  }
+
+  @Nested
+  @DisplayName("POST /api/v1/auth/password-set-up")
+  class PasswordSetupEndpoint {
+
+    @Test
+    @DisplayName("✅ returns 200 with success flag when password is set")
+    void setUpPassword_validRequest_returns200() throws Exception {
+      given(userService.setUpPassword(any(PasswordRequest.class))).willReturn(passwordResponse);
+
+      performPost("/api/v1/auth/password-set-up", validPasswordRequest)
+          .andDo(print())
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.message").value("success"))
+          .andExpect(jsonPath("$.data.userId").value("683127b5-4432-418c-962b-97c3ea5bfe23"))
+          .andExpect(jsonPath("$.data.isUpdated").value(true));
+    }
+
+    @Test
+    @DisplayName("❌ returns 400 when activation token has already been used or is invalid")
+    void setUpPassword_revokedToken_returns400() throws Exception {
+      given(userService.setUpPassword(any(PasswordRequest.class)))
+          .willThrow(new IllegalStateException("Activation token is invalid or already revoked"));
+
+      performPost("/api/v1/auth/password-set-up", validPasswordRequest)
+          .andDo(print())
+          .andExpect(jsonPath("$.detail").value("Activation token is invalid or already revoked"));
     }
   }
 

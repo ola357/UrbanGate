@@ -8,7 +8,9 @@ import com.urbangate.iam.dto.request.ResidentOnboardingRequest;
 import com.urbangate.iam.dto.response.PasswordResponse;
 import com.urbangate.iam.dto.response.ResidentOnboardingResponse;
 import com.urbangate.iam.dto.response.UserResponse;
+import com.urbangate.iam.entity.ActivationCode;
 import com.urbangate.iam.entity.TenantConfiguration;
+import com.urbangate.iam.repository.ActivationCodeRepository;
 import com.urbangate.iam.repository.TenantConfigurationRepository;
 import com.urbangate.iam.repository.impl.TenantConfigurationRedisImpl;
 import com.urbangate.iam.tenant.TenantDiscoveryKeyCloakService;
@@ -44,6 +46,7 @@ public class KeycloakUserService {
 
   private final Keycloak keycloak;
   private final TenantDiscoveryKeyCloakService tenantDiscoveryKeyCloakService;
+  private final ActivationCodeRepository activationCodeRepository;
   private final TenantConfigurationRepository tenantConfigurationRepository;
   private final TenantConfigurationRedisImpl tenantConfigurationRedisImpl;
 
@@ -101,12 +104,22 @@ public class KeycloakUserService {
               : "resident";
       assignRealmRole(userId, roleName);
 
+      String code = saveActivationCode(userId, httpServletRequest);
 
-      return new ResidentOnboardingResponse(userId, "to-be-generated");
+      return new ResidentOnboardingResponse(userId, code);
     }
   }
 
+  private String saveActivationCode(String userId, HttpServletRequest httpServletRequest) {
+    ActivationCode activationCode = new ActivationCode();
+    activationCode.setTtlInHours(activationCodeTtlInMinutes);
+    activationCode.setUserId(userId);
 
+    String token = generateActivationCode(httpServletRequest);
+    activationCode.setCode(token);
+    activationCodeRepository.insert(activationCode);
+    return token;
+  }
 
   private String generateActivationCode(HttpServletRequest httpServletRequest) {
     String realm = "tenant_" + resolveTenant(httpServletRequest);
@@ -139,6 +152,10 @@ public class KeycloakUserService {
     credential.setTemporary(false);
 
     getRealmResource().users().get(request.userId()).resetPassword(credential);
+    boolean revoked = activationCodeRepository.revokeCode(request.activationToken());
+    if (!revoked) {
+      throw new DataBaseOperationException(ExceptionResponse.UNABLE_TO_REVOKE_ACTIVATION_CODE);
+    }
 
     return new PasswordResponse(request.userId(), true);
   }
@@ -148,6 +165,17 @@ public class KeycloakUserService {
     return toUserResponse(userId, user);
   }
 
+  public UserResponse getUserByActivationCode(String code) {
+    ActivationCode activationCode =
+        activationCodeRepository
+            .findByCode(code)
+            .orElseThrow(
+                () -> new ResourceNotFoundException(ExceptionResponse.UNABLE_TO_FETCH_RECORD));
+    log.info("Activation code found: {}", activationCode.getUserId());
+    UserRepresentation user =
+        getRealmResource().users().get(activationCode.getUserId().trim()).toRepresentation();
+    return toUserResponse(user.getId(), user);
+  }
 
   public UserResponse getUserByUsername(String username) {
     List<UserRepresentation> users = getRealmResource().users().search(username, true);
@@ -280,5 +308,26 @@ public class KeycloakUserService {
         user.getAttributes());
   }
 
-
+  @Scheduled(fixedDelayString = "${activation-code.revoke-schedule-time:6000}")
+  public void scheduleActivationCodeRevoke() {
+    List<ActivationCode> activationCodes = activationCodeRepository.findAll();
+    if (activationCodes.isEmpty()) {
+      log.warn("No activation codes found");
+    }
+    activationCodes.forEach(
+        activationCode -> {
+          LocalDateTime now = LocalDateTime.now();
+          LocalDateTime timestamp =
+              activationCode
+                  .getCreatedOn()
+                  .toLocalDateTime()
+                  .plusHours(activationCode.getTtlInHours());
+          Boolean isPastTtl = now.isAfter(timestamp);
+          log.info("activation code found -{}", activationCode);
+          if (!activationCode.isRevoked() && isPastTtl) {
+            activationCodeRepository.revokeCode(activationCode.getCode());
+            log.info("Revoked activation code {}", activationCode.getCode());
+          }
+        });
+  }
 }
