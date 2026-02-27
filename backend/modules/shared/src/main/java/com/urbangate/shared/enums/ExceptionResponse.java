@@ -13,7 +13,8 @@ public enum ExceptionResponse {
   PHONE_NUMBER_ALREADY_REGISTERED("1006", "Phone number already registered"),
   EMAIL_ALREADY_REGISTERED("1007", "Email already registered"),
   TENANT_ALREADY_REGISTERED("1008", "Tenant already registered"),
-  ROLE_NOT_FOUND("1009", "Role Not Found");
+  ROLE_NOT_FOUND("1009", "Role Not Found"),
+  INVALID_RESET_CODE("1010", "Invalid or expired reset code");
 
   @Getter private String code;
   @Getter private String message;

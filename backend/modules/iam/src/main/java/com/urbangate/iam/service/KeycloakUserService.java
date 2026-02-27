@@ -49,6 +49,7 @@ public class KeycloakUserService {
   private final ActivationCodeRepository activationCodeRepository;
   private final TenantConfigurationRepository tenantConfigurationRepository;
   private final TenantConfigurationRedisImpl tenantConfigurationRedisImpl;
+  private final EmailService emailService;
 
   @Value("${activation-code.ttl-in-minutes:5}")
   private int activationCodeTtlInMinutes;
@@ -105,6 +106,7 @@ public class KeycloakUserService {
       assignRealmRole(userId, roleName);
 
       String code = saveActivationCode(userId, httpServletRequest);
+      emailService.sendEmail(request.email(), code);
 
       return new ResidentOnboardingResponse(userId, code);
     }
@@ -182,7 +184,7 @@ public class KeycloakUserService {
     if (users.isEmpty()) {
       throw new ResourceNotFoundException(ExceptionResponse.USER_NAME_NOTFOUND);
     }
-    ;
+
     UserRepresentation user = users.get(0);
     return toUserResponse(user.getId(), user);
   }
@@ -227,16 +229,15 @@ public class KeycloakUserService {
     log.info("Password reset for user: {}", userId);
   }
 
-  public void sendPasswordResetEmail(String email) {
+  public String sendPasswordResetEmail(String email) {
     List<UserRepresentation> users = getRealmResource().users().searchByEmail(email, true);
-    if (users.isEmpty()) {
-      log.info("Password reset requested for unknown email: {}", email);
-      return;
-    }
+
     String userId = users.get(0).getId();
     getRealmResource().users().get(userId).executeActionsEmail(List.of("UPDATE_PASSWORD"));
     log.info("Password reset email sent for user: {}", userId);
+    return "Password reset requested for email " + email;
   }
+
 
   public void adminResetPassword(String userId, String newPassword) {
     resetPassword(userId, newPassword, false);
