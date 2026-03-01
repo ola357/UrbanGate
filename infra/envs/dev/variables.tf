@@ -19,6 +19,10 @@ variable "pg_db_name" {
   type    = string
   default = "urbangate"
 }
+variable "pg_zone" {
+  type    = string
+  default = ""
+}
 variable "pg_sku_name" {
   type    = string
   default = "B_Standard_B1ms"
@@ -33,6 +37,11 @@ variable "urbangate_security_enabled" {
   default = "false"
 }
 variable "keycloak_issuer_uri" {
+  type    = string
+  default = ""
+}
+
+variable "backend_image" {
   type    = string
   default = ""
 }
