@@ -10,10 +10,6 @@ on:
   push:
     branches:
       - "main"
-      - "feature/**"
-      - "hotfix/**"
-      - "chore/**"
-      - "bugfix/**"
 
     paths:
       - "backend/**"
