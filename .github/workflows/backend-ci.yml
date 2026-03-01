@@ -69,11 +69,22 @@ jobs:
       - name: Install GitVersion
         run: dotnet tool install --global GitVersion.Tool
 
+      - name: GitVersion diagnostics
+        working-directory: .
+        run: |
+          echo "PWD=$(pwd)"
+          ls -al
+          git status --porcelain || true
+          git branch -a || true
+          git log -5 --oneline || true
+          test -f GitVersion.yml && echo "GitVersion.yml found" || (echo "GitVersion.yml missing" && exit 1)
+          dotnet-gitversion /config GitVersion.yml /showvariable SemVer || true
+
       - name: Compute version
         id: gitversion
         working-directory: .
         run: |
-          SEMVER=$(dotnet-gitversion /showvariable SemVer)
+          SEMVER=$(dotnet-gitversion /config GitVersion.yml /showvariable SemVer)
           echo "semver=$SEMVER" >> "$GITHUB_OUTPUT"
 
       - name: Compute vars
