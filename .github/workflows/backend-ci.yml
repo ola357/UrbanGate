@@ -1,20 +1,20 @@
-name: Backend CI
+name: Backend CI + Dev Deploy
 
 on:
   pull_request:
-    branches:
-      - main
-      - develop
-      - staging
+    branches: [ "main" ]
     paths:
       - "backend/**"
-      - ".github/workflows/backend-ci.yml"  # so workflow changes still test CI
+      - ".github/workflows/backend-ci.yml"
 
   push:
     branches:
-      - main
-      - develop
-      - staging
+      - "main"
+      - "feature/**"
+      - "hotfix/**"
+      - "chore/**"
+      - "bugfix/**"
+
     paths:
       - "backend/**"
       - ".github/workflows/backend-ci.yml"
@@ -24,15 +24,26 @@ on:
 permissions:
   contents: read
   pull-requests: read
+  packages: write
+  id-token: write
 
-defaults:
-  run:
-    working-directory: backend
+concurrency:
+  group: backend-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  ci:
+    name: CI (tests, quality, sonar)
     runs-on: ubuntu-latest
-    environment: dev
+
+    defaults:
+      run:
+        working-directory: backend
+
+    outputs:
+      semver: ${{ steps.gitversion.outputs.semver }}
+      short_sha: ${{ steps.vars.outputs.short_sha }}
+      owner_lc: ${{ steps.vars.outputs.owner_lc }}
 
     steps:
       - uses: actions/checkout@v4
@@ -46,15 +57,38 @@ jobs:
           java-version: "21"
           cache: gradle
 
+      - name: Build + test + quality checks
+        run: ./gradlew clean check spotlessCheck
+
+      # GitVersion (SemVer) - uses .NET global tool
+      - name: Setup .NET (for GitVersion)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install GitVersion
+        run: dotnet tool install --global GitVersion.Tool
+
+      - name: Compute version
+        id: gitversion
+        working-directory: .
+        run: |
+          SEMVER=$(dotnet-gitversion /showvariable SemVer)
+          echo "semver=$SEMVER" >> "$GITHUB_OUTPUT"
+
+      - name: Compute vars
+        id: vars
+        run: |
+          echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "owner_lc=$OWNER_LC" >> "$GITHUB_OUTPUT"
+
       - name: Cache Sonar packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-
-      - name: Build + test + quality checks
-        run: ./gradlew clean check spotlessCheck
 
       - name: SonarCloud analysis
         if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
@@ -70,3 +104,87 @@ jobs:
             -Dsonar.token=$SONAR_TOKEN \
             -Dsonar.qualitygate.wait=true \
             -Dsonar.qualitygate.timeout=300
+
+  build_image:
+    name: Build & Push image to GHCR
+    runs-on: ubuntu-latest
+    needs: [ ci ]
+
+    outputs:
+      image: ${{ steps.meta.outputs.image }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute image tags
+        id: meta
+        run: |
+          OWNER_LC="${{ needs.ci.outputs.owner_lc }}"
+          IMAGE_BASE="ghcr.io/${OWNER_LC}/urbangate-backend"
+          IMAGE_SEMVER="${IMAGE_BASE}:${{ needs.ci.outputs.semver }}"
+          IMAGE_SHA="${IMAGE_BASE}:sha-${{ needs.ci.outputs.short_sha }}"
+
+          echo "image=${IMAGE_SEMVER}" >> "$GITHUB_OUTPUT"
+          echo "IMAGE_SEMVER=${IMAGE_SEMVER}" >> "$GITHUB_ENV"
+          echo "IMAGE_SHA=${IMAGE_SHA}" >> "$GITHUB_ENV"
+          echo "IMAGE_LATEST=${IMAGE_BASE}:latest" >> "$GITHUB_ENV"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          file: backend/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE_SEMVER }}
+            ${{ env.IMAGE_SHA }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Tag latest (main only)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          file: backend/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE_LATEST }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy_dev:
+    name: Deploy to Azure Container Apps (dev)
+    runs-on: ubuntu-latest
+    needs: [ build_image, ci ]
+
+    # Deploy for PRs and feature branches and main (your preference is PR->dev)
+    if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feature/') }}
+
+    environment: dev
+
+    steps:
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy image to Container App
+        run: |
+          az containerapp update \
+            --name "${{ secrets.AZURE_CONTAINER_APP_NAME }}" \
+            --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+            --image "${{ needs.build_image.outputs.image }}" \
+            --set-env-vars APP_VERSION="${{ needs.ci.outputs.semver }}" GIT_SHA="${{ github.sha }}"
