@@ -15,4 +15,6 @@ dependencies {
     implementation("org.apache.commons:commons-pool2")
     implementation("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    annotationProcessor("org.projectlombok:lombok:1.18.32")
+    compileOnly("org.projectlombok:lombok:1.18.32")
 }

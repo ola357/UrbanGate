@@ -1,6 +1,3 @@
-import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.api.plugins.quality.CheckstyleExtension
-
 plugins {
     id("org.springframework.boot") version "3.5.10" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
@@ -48,28 +45,30 @@ subprojects {
         }
 
         classDirectories.setFrom(
-            files(classDirectories.files.map {
-                fileTree(it) {
-                    include(
-                        "**/web/**",
-                    )
-                    exclude(
-                        "**/dto/**",
-                        "**/entity/**",
-                        "**/model/**",
-                        "**/util/**",
-                        "**/config/**",
-                        "**/configuration/**",
-                        "**/repository/**",
-                        "**/exceptions/**",
-                        "**/enums/**",
-                        "**/mapper/**",
-                        "**/*Application.class",
-                        "**/*Request.class",
-                        "**/*Response.class",
-                    )
-                }
-            })
+            files(
+                classDirectories.files.map {
+                    fileTree(it) {
+                        include(
+                            "**/web/**",
+                        )
+                        exclude(
+                            "**/dto/**",
+                            "**/entity/**",
+                            "**/model/**",
+                            "**/util/**",
+                            "**/config/**",
+                            "**/configuration/**",
+                            "**/repository/**",
+                            "**/exceptions/**",
+                            "**/enums/**",
+                            "**/mapper/**",
+                            "**/*Application.class",
+                            "**/*Request.class",
+                            "**/*Response.class",
+                        )
+                    }
+                },
+            ),
         )
     }
     tasks.withType<JacocoCoverageVerification>().named("jacocoTestCoverageVerification") {
@@ -77,28 +76,30 @@ subprojects {
         dependsOn(tasks.named("jacocoTestReport"))
 
         classDirectories.setFrom(
-            files(classDirectories.files.map {
-                fileTree(it) {
-                    include(
-                        "**/web/**",
-                    )
-                    exclude(
-                        "**/dto/**",
-                        "**/entity/**",
-                        "**/model/**",
-                        "**/config/**",
-                        "**/util/**",
-                        "**/configuration/**",
-                        "**/repository/**",
-                        "**/exceptions/**",
-                        "**/enums/**",
-                        "**/mapper/**",
-                        "**/*Application.class",
-                        "**/*Request.class",
-                        "**/*Response.class",
-                    )
-                }
-            })
+            files(
+                classDirectories.files.map {
+                    fileTree(it) {
+                        include(
+                            "**/web/**",
+                        )
+                        exclude(
+                            "**/dto/**",
+                            "**/entity/**",
+                            "**/model/**",
+                            "**/config/**",
+                            "**/util/**",
+                            "**/configuration/**",
+                            "**/repository/**",
+                            "**/exceptions/**",
+                            "**/enums/**",
+                            "**/mapper/**",
+                            "**/*Application.class",
+                            "**/*Request.class",
+                            "**/*Response.class",
+                        )
+                    }
+                },
+            ),
         )
 
         violationRules {
@@ -167,8 +168,9 @@ sonar {
         property("sonar.java.coveragePlugin", "jacoco")
         property("sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml")
 
-
-        property("sonar.coverage.exclusions", """
+        property(
+            "sonar.coverage.exclusions",
+            """
             **/dto/**,
             **/entity/**,
             **/model/**,
@@ -183,14 +185,14 @@ sonar {
             **/*Application.java,
             **/*Request.java,
             **/*Response.java
-        """.trimIndent())
+            """.trimIndent(),
+        )
 
-        property("sonar.coverage.jacoco.xmlReportPaths",
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
             subprojects.joinToString(",") { subproject ->
                 "${subproject.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-            }
+            },
         )
     }
-
-
 }
