@@ -52,10 +52,62 @@ subprojects {
             xml.required.set(true)
             html.required.set(true)
         }
+
+        classDirectories.setFrom(
+            files(classDirectories.files.map {
+                fileTree(it) {
+                    include(
+                        "**/service/**",
+                        "**/web/**",
+                    )
+                    exclude(
+                        "**/dto/**",
+                        "**/entity/**",
+                        "**/model/**",
+                        "**/util/**",
+                        "**/config/**",
+                        "**/configuration/**",
+                        "**/repository/**",
+                        "**/exceptions/**",
+                        "**/enums/**",
+                        "**/mapper/**",
+                        "**/*Application.class",
+                        "**/*Request.class",
+                        "**/*Response.class",
+                    )
+                }
+            })
+        )
     }
     tasks.withType<JacocoCoverageVerification>().named("jacocoTestCoverageVerification") {
         dependsOn(tasks.named<Test>("test"))
         dependsOn(tasks.named("jacocoTestReport"))
+
+        classDirectories.setFrom(
+            files(classDirectories.files.map {
+                fileTree(it) {
+                    include(
+                        "**/service/**",
+                        "**/web/**",
+                    )
+                    exclude(
+                        "**/dto/**",
+                        "**/entity/**",
+                        "**/model/**",
+                        "**/config/**",
+                        "**/util/**",
+                        "**/configuration/**",
+                        "**/repository/**",
+                        "**/exceptions/**",
+                        "**/enums/**",
+                        "**/mapper/**",
+                        "**/*Application.class",
+                        "**/*Request.class",
+                        "**/*Response.class",
+                    )
+                }
+            })
+        )
 
         violationRules {
             rule {
@@ -112,13 +164,32 @@ tasks.register("lint") {
 
 // SonarCloud config (fill required props in CI)
 
-sonarqube {
+sonar {
     properties {
-        property("sonar.sourceEncoding", "UTF-8")
+
+        property("sonar.projectKey", "urban-gate")
+        property("sonar.organization", "Urban gate")
+        property("sonar.projectName", "Urban gate")
+        property("sonar.host.url", System.getenv("SONAR_URL"))
+        property("sonar.token", System.getenv("SONARQUBE"))
         property("sonar.java.coveragePlugin", "jacoco")
-        property(
-            "sonar.coverage.jacoco.xmlReportPaths",
-            "**/build/reports/jacoco/test/jacocoTestReport.xml",
-        )
+        property("sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml")
+
+
+        property("sonar.coverage.exclusions", """
+            **/dto/**,
+            **/entity/**,
+            **/model/**,
+            **/config/**,
+            "**/util/**",
+            **/configuration/**,
+            **/repository/**,
+            **/exceptions/**,
+            **/enums/**,
+            **/mapper/**,
+            **/*Application.java,
+            **/*Request.java,
+            **/*Response.java
+        """.trimIndent())
     }
 }

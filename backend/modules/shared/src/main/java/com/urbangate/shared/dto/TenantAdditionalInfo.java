@@ -32,4 +32,5 @@ public record TenantAdditionalInfo(
     String estateCode,
     boolean sendBirthdayShout,
     @Min(value = 0, message = "Maximum guests must be >= 0") int maximumGuestsForMultipleCode,
+    @Min(value = 15, message = "Maximum guests must be >= 15") int defaultAccessCodeExpiryInMinutes,
     @NotEmpty(message = "Payable bills cannot be empty") @Valid List<PayableBills> payableBills) {}

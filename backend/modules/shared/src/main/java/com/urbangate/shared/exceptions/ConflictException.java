@@ -6,10 +6,11 @@ import lombok.Getter;
 
 public class ConflictException extends RuntimeException {
 
-  @Getter private String code;
+  @Getter private final String code;
 
   public ConflictException(String message) {
     super(message);
+    this.code = null;
   }
 
   public ConflictException(ExceptionResponse response) {

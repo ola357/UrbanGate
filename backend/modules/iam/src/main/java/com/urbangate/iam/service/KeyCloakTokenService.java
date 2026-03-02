@@ -31,22 +31,24 @@ public class KeyCloakTokenService {
 
   private final KeycloakProperties keycloakProperties;
   private final ObjectMapper objectMapper;
+  private static final String TENANT_PREFIX = "tenant_";
+  private static final String REFRESH_TOKEN_KEY = "refresh_token";
+  private static final String CLIENT_ID_KEY = "client_id";
 
   public TokenResponse login(AuthRequest request, HttpServletRequest httpServletRequest)
       throws AuthenticationException {
     log.info("Login attempt for user: {}", request.phoneNumber());
 
-    String realm = "tenant_" + resolveTenant(httpServletRequest);
+    String realm = TENANT_PREFIX + resolveTenant(httpServletRequest);
 
     List<NameValuePair> params = new ArrayList<>();
     params.add(new BasicNameValuePair("grant_type", "password"));
-    params.add(new BasicNameValuePair("client_id", keycloakProperties.getPublicClientId()));
+    params.add(new BasicNameValuePair(CLIENT_ID_KEY, keycloakProperties.getPublicClientId()));
     params.add(new BasicNameValuePair("username", request.phoneNumber()));
     params.add(new BasicNameValuePair("password", request.password()));
     params.add(new BasicNameValuePair("scope", "openid profile email roles"));
 
     JsonNode tokenResponse = callTokenEndpoint(params, realm);
-    log.info(tokenResponse.toString());
     return buildAuthResponse(tokenResponse);
   }
 
@@ -54,11 +56,11 @@ public class KeyCloakTokenService {
       throws AuthenticationException {
     log.info("Refreshing token");
 
-    String realm = "tenant_" + resolveTenant(httpServletRequest);
+    String realm = TENANT_PREFIX + resolveTenant(httpServletRequest);
     List<NameValuePair> params = new ArrayList<>();
-    params.add(new BasicNameValuePair("grant_type", "refresh_token"));
-    params.add(new BasicNameValuePair("client_id", keycloakProperties.getAdminClientId()));
-    params.add(new BasicNameValuePair("refresh_token", refreshToken));
+    params.add(new BasicNameValuePair("grant_type", REFRESH_TOKEN_KEY));
+    params.add(new BasicNameValuePair(CLIENT_ID_KEY, keycloakProperties.getPublicClientId()));
+    params.add(new BasicNameValuePair(REFRESH_TOKEN_KEY, refreshToken));
 
     JsonNode tokenResponse = callTokenEndpoint(params, realm);
     return buildAuthResponse(tokenResponse);
@@ -67,14 +69,14 @@ public class KeyCloakTokenService {
   public void logout(String refreshToken, HttpServletRequest httpServletRequest)
       throws AuthenticationException {
     log.info("Revoking refresh token");
-    String realm = "tenant_" + resolveTenant(httpServletRequest);
+    String realm = TENANT_PREFIX + resolveTenant(httpServletRequest);
     String logoutUrl =
         String.format(
             "%s/realms/%s/protocol/openid-connect/logout", keycloakProperties.getUrl(), realm);
 
     List<NameValuePair> params = new ArrayList<>();
-    params.add(new BasicNameValuePair("client_id", keycloakProperties.getAdminClientId()));
-    params.add(new BasicNameValuePair("refresh_token", refreshToken));
+    params.add(new BasicNameValuePair(CLIENT_ID_KEY, keycloakProperties.getAdminClientId()));
+    params.add(new BasicNameValuePair(REFRESH_TOKEN_KEY, refreshToken));
 
     try (CloseableHttpClient client = HttpClients.createDefault()) {
       HttpPost post = new HttpPost(logoutUrl);
@@ -123,7 +125,7 @@ public class KeyCloakTokenService {
 
   private TokenResponse buildAuthResponse(JsonNode json) {
     String accessToken = json.path("access_token").asText();
-    String refreshToken = json.path("refresh_token").asText(null);
+    String refreshToken = json.path(REFRESH_TOKEN_KEY).asText(null);
     String scope = json.path("scope").asText(null);
     String expiresIn = json.path("expires_in").asText(null);
 

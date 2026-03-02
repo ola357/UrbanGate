@@ -4,15 +4,15 @@ package com.urbangate.shared.repository;
 import java.time.Duration;
 import java.util.Optional;
 
-public interface BaseRedisRepository<T, ID> {
+public interface BaseRedisRepository<T, K> {
 
-  public Optional<T> findById(ID key);
+  Optional<T> findById(K key);
 
-  public void save(T entity, Duration ttl);
+  void save(T entity, Duration ttl);
 
-  public void evict(ID key);
+  void evict(K key);
 
-  public void evictAll();
+  void evictAll();
 
-  public boolean exists(ID key);
+  boolean exists(K key);
 }

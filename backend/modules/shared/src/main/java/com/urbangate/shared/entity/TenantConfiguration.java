@@ -1,7 +1,6 @@
 // Copyright (c) UrbanGate
-package com.urbangate.iam.entity;
+package com.urbangate.shared.entity;
 
-import com.urbangate.shared.entity.BaseEntity;
 import com.urbangate.shared.enums.PayableBills;
 import java.util.List;
 import lombok.Getter;
@@ -28,5 +27,6 @@ public class TenantConfiguration extends BaseEntity {
   private String estateCode;
   private boolean sendBirthdayShout;
   private int maximumGuestsForMultipleCode;
+  private int defaultAccessCodeExpiryInMinutes;
   private List<PayableBills> payableBills;
 }

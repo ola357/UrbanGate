@@ -1,4 +1,5 @@
-package com.urbangate.iam.service;
+// Copyright (c) UrbanGate
+package com.urbangate.shared.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -6,14 +7,12 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-//TODO : (TESTING PURPOSE) - REPLACE THIS LATER WITH A MORE DYNAMIC EMAIL SERVICE IN THE NOTIFICATION MODULE
-
+// TODOX : (TESTING PURPOSE) - REPLACE THIS LATER WITH A MORE DYNAMIC EMAIL SERVICE IN THE
+// NOTIFICATION MODULE
 
 @Service
 @RequiredArgsConstructor
 public class EmailService {
-
-
 
   private final JavaMailSender mailSender;
 
@@ -24,8 +23,9 @@ public class EmailService {
     SimpleMailMessage message = new SimpleMailMessage();
     message.setFrom(from);
     message.setTo(to);
-    message.setSubject("Your Password Reset Code");
-    message.setText("""
+    message.setSubject("Your Code Is Here!!");
+    message.setText(
+        """
                 Hi,
 
                 This is your requested Code.
@@ -35,7 +35,8 @@ public class EmailService {
                 If you didn't request this, you can safely ignore this email.
 
                 – The Urban Gate Team
-                """.formatted(data));
+                """
+            .formatted(data));
 
     mailSender.send(message);
   }

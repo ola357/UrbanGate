@@ -1,7 +1,9 @@
 // Copyright (c) UrbanGate
-package com.urbangate.iam.tenant;
+package com.urbangate.iam.util;
 
-public class TenantContext {
+public final class TenantContext {
+
+  private TenantContext() {}
 
   private static final ThreadLocal<String> CURRENT_TENANT = new ThreadLocal<>();
 
@@ -14,7 +16,6 @@ public class TenantContext {
     if (tenant == null) {
       throw new IllegalStateException("No tenant in context");
     }
-    ;
     return tenant;
   }
 

@@ -6,10 +6,16 @@ import lombok.Getter;
 
 public class AuthenticationException extends RuntimeException {
 
-  @Getter private String code;
+  @Getter private final String code;
+
+  public AuthenticationException(String message, String code) {
+    super(message);
+    this.code = code;
+  }
 
   public AuthenticationException(String message) {
     super(message);
+    this.code = null;
   }
 
   public AuthenticationException(ExceptionResponse response) {

@@ -9,25 +9,24 @@ import com.urbangate.iam.dto.response.PasswordResponse;
 import com.urbangate.iam.dto.response.ResidentOnboardingResponse;
 import com.urbangate.iam.dto.response.UserResponse;
 import com.urbangate.iam.entity.ActivationCode;
-import com.urbangate.iam.entity.TenantConfiguration;
 import com.urbangate.iam.repository.ActivationCodeRepository;
-import com.urbangate.iam.repository.TenantConfigurationRepository;
-import com.urbangate.iam.repository.impl.TenantConfigurationRedisImpl;
 import com.urbangate.iam.tenant.TenantDiscoveryKeyCloakService;
+import com.urbangate.shared.entity.TenantConfiguration;
 import com.urbangate.shared.enums.ExceptionResponse;
 import com.urbangate.shared.exceptions.ConflictException;
 import com.urbangate.shared.exceptions.DataBaseOperationException;
 import com.urbangate.shared.exceptions.ResourceNotFoundException;
+import com.urbangate.shared.repository.TenantConfigurationRepository;
+import com.urbangate.shared.service.EmailService;
+import com.urbangate.shared.service.TenantConfigurationRedisImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.admin.client.resource.UserResource;
@@ -44,7 +43,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class KeycloakUserService {
 
-  private final Keycloak keycloak;
   private final TenantDiscoveryKeyCloakService tenantDiscoveryKeyCloakService;
   private final ActivationCodeRepository activationCodeRepository;
   private final TenantConfigurationRepository tenantConfigurationRepository;
@@ -92,7 +90,7 @@ public class KeycloakUserService {
       if (response.getStatus() != 201) {
         String body = response.readEntity(String.class);
         log.error("Failed to create user. Status: {} Body: {}", response.getStatus(), body);
-        throw new RuntimeException("Failed to create user in Keycloak: " + body);
+        throw new IllegalArgumentException("Failed to create user in Keycloak: " + body);
       }
 
       String userId = extractUserIdFromLocation(response);
@@ -192,13 +190,13 @@ public class KeycloakUserService {
   public List<UserResponse> getAllUsers(int first, int max) {
     return getRealmResource().users().list(first, max).stream()
         .map(u -> toUserResponse(u.getId(), u))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   public List<UserResponse> searchUsers(String query) {
     return getRealmResource().users().search(query, 0, 50).stream()
         .map(u -> toUserResponse(u.getId(), u))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   public UserResponse updateUser(String userId, String firstName, String lastName, String email) {
@@ -238,7 +236,6 @@ public class KeycloakUserService {
     return "Password reset requested for email " + email;
   }
 
-
   public void adminResetPassword(String userId, String newPassword) {
     resetPassword(userId, newPassword, false);
   }
@@ -277,7 +274,7 @@ public class KeycloakUserService {
                 !r.startsWith("default-roles")
                     && !r.equals("offline_access")
                     && !r.equals("uma_authorization"))
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private RealmResource getRealmResource() {
@@ -287,7 +284,7 @@ public class KeycloakUserService {
   private String extractUserIdFromLocation(Response response) {
     String location = response.getHeaderString("Location");
     if (location == null) {
-      throw new RuntimeException("Keycloak did not return a Location header");
+      throw new IllegalArgumentException("Keycloak did not return a Location header");
     }
     return location.substring(location.lastIndexOf("/") + 1);
   }
@@ -303,7 +300,7 @@ public class KeycloakUserService {
         user.getAttributes());
   }
 
-  @Scheduled(fixedDelayString = "${activation-code.revoke-schedule-time:6000}")
+  @Scheduled(fixedDelayString = "${scheduler.activation-code.revoke-schedule-time:6000}")
   public void scheduleActivationCodeRevoke() {
     List<ActivationCode> activationCodes = activationCodeRepository.findAll();
     if (activationCodes.isEmpty()) {

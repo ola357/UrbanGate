@@ -5,6 +5,7 @@ import static com.urbangate.iam.tenant.TenantResolutionFilter.resolveTenant;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,10 @@ public class SecurityConfig {
     "/actuator/info"
   };
 
+  private static final String ADMIN_ROLE = "ADMIN";
+  private static final String ROLE_LITERAL = "roles";
+  private static final String ROLE_PREFIX = "ROLE_";
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
@@ -75,19 +80,19 @@ public class SecurityConfig {
 
                     // Admin-only endpoints
                     .requestMatchers("/api/v1/platform/**")
-                    .hasRole("ADMIN")
+                    .hasRole(ADMIN_ROLE)
 
                     // Manager endpoints
                     .requestMatchers("/api/v1/manager/**")
-                    .hasAnyRole("ADMIN", "MANAGER")
+                    .hasAnyRole(ADMIN_ROLE, "MANAGER")
 
                     // User endpoints require authentication
                     .requestMatchers("/api/v1/users/**")
                     .authenticated()
                     .requestMatchers("/api/v1/roles/**")
-                    .hasRole("ADMIN")
+                    .hasRole(ADMIN_ROLE)
                     .requestMatchers("/api/v1/permissions/**")
-                    .hasRole("ADMIN")
+                    .hasRole(ADMIN_ROLE)
 
                     // Everything else requires authentication
                     .anyRequest()
@@ -107,55 +112,73 @@ public class SecurityConfig {
 
   private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
     List<GrantedAuthority> authorities = new ArrayList<>();
-
-    // Extract realm-level roles
-    Map<String, Object> realmAccess = jwt.getClaim("realm_access");
-    if (realmAccess != null && realmAccess.containsKey("roles")) {
-      log.info("This is the roles claim for realm_access");
-      List<String> realmRoles = (List<String>) realmAccess.get("roles");
-      realmRoles.stream()
-          .filter(
-              role ->
-                  !role.startsWith("default-roles")
-                      && !role.equals("offline_access")
-                      && !role.equals("uma_authorization"))
-          .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
-          .forEach(authorities::add);
-    }
-
-    // Extract client-level roles for fine-grained access
-    Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
-    log.info("This is the roles claim for resource_access");
-    if (resourceAccess != null) {
-      resourceAccess.forEach(
-          (clientId, clientData) -> {
-            if (clientData instanceof Map) {
-              Map<String, Object> clientMap = (Map<String, Object>) clientData;
-              if (clientMap.containsKey("roles")) {
-                List<String> clientRoles = (List<String>) clientMap.get("roles");
-                clientRoles.stream()
-                    .map(
-                        role ->
-                            new SimpleGrantedAuthority(
-                                "ROLE_" + clientId.toUpperCase() + "_" + role.toUpperCase()))
-                    .forEach(authorities::add);
-              }
-            }
-          });
-    }
-
-    // Extract scopes as authorities (for fine-grained permissions)
-    String scope = jwt.getClaim("scope");
-    if (scope != null) {
-      log.info("This is the roles claim for scope");
-      for (String s : scope.split(" ")) {
-        if (!s.isBlank()) {
-          authorities.add(new SimpleGrantedAuthority("SCOPE_" + s));
-        }
-      }
-    }
-
+    authorities.addAll(extractRealmRoles(jwt));
+    authorities.addAll(extractClientRoles(jwt));
+    authorities.addAll(extractScopes(jwt));
     return authorities;
+  }
+
+  private List<? extends GrantedAuthority> extractRealmRoles(Jwt jwt) {
+    Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+    if (realmAccess == null || !realmAccess.containsKey(ROLE_LITERAL)) {
+      return List.of();
+    }
+
+    log.info("Extracting realm_access roles");
+    List<String> realmRoles = (List<String>) realmAccess.get(ROLE_LITERAL);
+
+    return realmRoles.stream()
+        .filter(
+            role ->
+                !role.startsWith("default-roles")
+                    && !role.equals("offline_access")
+                    && !role.equals("uma_authorization"))
+        .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX + role.toUpperCase()))
+        .toList();
+  }
+
+  private List<? extends GrantedAuthority> extractClientRoles(Jwt jwt) {
+    Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
+    if (resourceAccess == null) {
+      return List.of();
+    }
+
+    log.info("Extracting resource_access roles");
+    return resourceAccess.entrySet().stream()
+        .filter(entry -> entry.getValue() instanceof Map)
+        .flatMap(
+            entry ->
+                extractRolesFromClient(entry.getKey(), (Map<String, Object>) entry.getValue())
+                    .stream())
+        .toList();
+  }
+
+  private List<? extends GrantedAuthority> extractRolesFromClient(
+      String clientId, Map<String, Object> clientMap) {
+    if (!clientMap.containsKey(ROLE_LITERAL)) {
+      return List.of();
+    }
+
+    List<String> clientRoles = (List<String>) clientMap.get(ROLE_LITERAL);
+    return clientRoles.stream()
+        .map(
+            role ->
+                new SimpleGrantedAuthority(
+                    ROLE_PREFIX + clientId.toUpperCase() + "_" + role.toUpperCase()))
+        .toList();
+  }
+
+  private List<? extends GrantedAuthority> extractScopes(Jwt jwt) {
+    String scope = jwt.getClaim("scope");
+    if (scope == null) {
+      return List.of();
+    }
+
+    log.info("Extracting scopes");
+    return Arrays.stream(scope.split(" "))
+        .filter(s -> !s.isBlank())
+        .map(s -> new SimpleGrantedAuthority("SCOPE_" + s))
+        .toList();
   }
 
   private final Map<String, JwtDecoder> decoderCache = new ConcurrentHashMap<>();

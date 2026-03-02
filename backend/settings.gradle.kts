@@ -23,3 +23,5 @@ include(":modules:wallet")
 include(":modules:directory")
 include(":modules:notifications")
 include(":modules:audit")
+
+include("modules:access:access")

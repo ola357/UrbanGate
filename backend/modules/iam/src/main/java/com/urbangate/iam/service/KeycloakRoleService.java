@@ -1,15 +1,13 @@
 // Copyright (c) UrbanGate
 package com.urbangate.iam.service;
 
-import com.urbangate.iam.configuration.KeycloakProperties;
 import com.urbangate.iam.dto.request.CreateRoleRequest;
 import com.urbangate.iam.dto.response.RoleResponse;
-import com.urbangate.iam.tenant.TenantContext;
+import com.urbangate.iam.util.TenantContext;
 import com.urbangate.shared.enums.ExceptionResponse;
 import com.urbangate.shared.exceptions.ConflictException;
 import com.urbangate.shared.exceptions.ResourceNotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Service;
 public class KeycloakRoleService {
 
   private final Keycloak keycloak;
-  private final KeycloakProperties keycloakProperties;
 
   public RoleResponse createRole(CreateRoleRequest request) {
     log.info("Creating realm role: {}", request.name());
@@ -32,7 +29,7 @@ public class KeycloakRoleService {
       getRealmResource().roles().get(request.name()).toRepresentation();
       throw new ConflictException("Role '" + request.name() + "' already exists");
     } catch (jakarta.ws.rs.NotFoundException ignored) {
-
+      log.info("Role '{}' does not exist, going on to create a new one", request.name());
     }
 
     RoleRepresentation role = new RoleRepresentation();
@@ -54,7 +51,7 @@ public class KeycloakRoleService {
                     && !r.getName().equals("offline_access")
                     && !r.getName().equals("uma_authorization"))
         .map(this::toRoleResponse)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   public RoleResponse getRoleByName(String name) {
@@ -86,7 +83,7 @@ public class KeycloakRoleService {
                     throw new ResourceNotFoundException("Child role not found: " + name);
                   }
                 })
-            .collect(Collectors.toList());
+            .toList();
 
     getRealmResource().roles().get(parentRoleName).addComposites(children);
     log.info("Added composites {} to role '{}'", childRoleNames, parentRoleName);
@@ -95,7 +92,7 @@ public class KeycloakRoleService {
   public List<RoleResponse> getRoleComposites(String roleName) {
     return getRealmResource().roles().get(roleName).getRoleComposites().stream()
         .map(this::toRoleResponse)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private RealmResource getRealmResource() {

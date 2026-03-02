@@ -1,7 +1,7 @@
 // Copyright (c) UrbanGate
-package com.urbangate.iam.repository.impl;
+package com.urbangate.shared.service;
 
-import com.urbangate.iam.entity.TenantConfiguration;
+import com.urbangate.shared.entity.TenantConfiguration;
 import com.urbangate.shared.repository.BaseRedisRepository;
 import java.time.Duration;
 import java.util.Optional;
@@ -23,9 +23,9 @@ public class TenantConfigurationRedisImpl
 
   public TenantConfigurationRedisImpl(
       RedisTemplate<String, Object> redisTemplate,
-      @Value("${app.redis.default-ttl-seconds:3600}") long defaultTtlSeconds) {
+      @Value("${app.redis.default-ttl:3600}") long defaultTtlSeconds) {
     this.redisTemplate = redisTemplate;
-    this.defaultTtl = Duration.ofSeconds(defaultTtlSeconds);
+    this.defaultTtl = Duration.ofMinutes(defaultTtlSeconds);
   }
 
   private String key(String id) {

@@ -68,10 +68,19 @@ keycloak:
   admin-password: ug-admin_password
   admin-username: admin
   public-client-id: mobile-app
+  admin-realm: master
+  redirect-uri: "*"
 
 
+scheduler:
+  activation-code:
+    revoke-schedule-time: 6000
+  access-code:
+    revoke-schedule-time: 6000
 
-
+app:
+  redis:
+    default-ttl: 4000
 
 urbangate:
   env: dev

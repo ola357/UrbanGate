@@ -1,28 +1,25 @@
+// Copyright (c) UrbanGate
 package com.urbangate.iam.repository.impl;
 
-import com.urbangate.iam.entity.TenantConfiguration;
 import com.urbangate.shared.repository.BaseRedisRepository;
-import lombok.RequiredArgsConstructor;
+import java.time.Duration;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.util.Optional;
-
 @Slf4j
 @Service
-public class ResetTokenServiceImpl implements BaseRedisRepository<String , String> {
+public class ResetTokenServiceImpl implements BaseRedisRepository<String, String> {
 
   private static final String NAMESPACE = "password::reset::";
   private final RedisTemplate<String, Object> redisTemplate;
   private final Duration defaultTtl;
 
-
   public ResetTokenServiceImpl(
-          RedisTemplate<String, Object> redisTemplate,
-          @Value("${app.redis.default-ttl-password-resets:15}") long defaultTtlSeconds) {
+      RedisTemplate<String, Object> redisTemplate,
+      @Value("${app.redis.default-ttl-password-resets:15}") long defaultTtlSeconds) {
     this.redisTemplate = redisTemplate;
     this.defaultTtl = Duration.ofMinutes(defaultTtlSeconds);
   }
@@ -50,7 +47,8 @@ public class ResetTokenServiceImpl implements BaseRedisRepository<String , Strin
 
   public boolean validate(String code, String email) {
     return findById(email).stream()
-            .anyMatch(result -> {
+        .anyMatch(
+            result -> {
               log.info("Validate email={}", email);
               log.info("Validate result={}", result);
               return result.equals(code);
@@ -65,13 +63,11 @@ public class ResetTokenServiceImpl implements BaseRedisRepository<String , Strin
     } catch (Exception ex) {
       log.error("Cache save failed key={}: {}", fullKey, ex.getMessage(), ex);
     }
-
   }
-
 
   @Override
   public void save(String entity, Duration ttl) {
-
+    // Un-Used At the moment
   }
 
   @Override
@@ -87,7 +83,7 @@ public class ResetTokenServiceImpl implements BaseRedisRepository<String , Strin
 
   @Override
   public void evictAll() {
-
+    // Un-Used At The Moment
   }
 
   @Override
@@ -99,5 +95,4 @@ public class ResetTokenServiceImpl implements BaseRedisRepository<String , Strin
       return false;
     }
   }
-
 }

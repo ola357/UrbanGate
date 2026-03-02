@@ -10,13 +10,13 @@ import org.springframework.stereotype.Repository;
  *  @Date 04/02/2026
  * */
 @Repository
-public interface BaseRepository<T, ID> {
+public interface BaseRepository<T, K> {
 
   T insert(T entity);
 
   T update(T entity);
 
-  Optional<T> findById(ID id);
+  Optional<T> findById(K id);
 
   List<T> findAll();
 }

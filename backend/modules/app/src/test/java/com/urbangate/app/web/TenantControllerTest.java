@@ -79,6 +79,7 @@ class TenantControllerTest {
                 "URBGAT",
                 false,
                 8,
+                15,
                 List.of(PayableBills.WASTE)));
   }
 

@@ -15,6 +15,8 @@ public class KeycloakProperties {
   private String adminPassword;
   private String adminUsername;
   private String publicClientId;
+  private String adminRealm;
+  private String redirectUri;
 
   public String getTokenEndpoint(String realm) {
     return String.format("%s/realms/%s/protocol/openid-connect/token", url, realm);

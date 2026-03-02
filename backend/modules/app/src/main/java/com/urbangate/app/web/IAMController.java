@@ -14,7 +14,6 @@ import com.urbangate.iam.service.KeyCloakTokenService;
 import com.urbangate.iam.service.KeycloakUserService;
 import com.urbangate.shared.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -41,14 +40,6 @@ public class IAMController {
       summary = "Sign in",
       description =
           "Authenticate with username/email and password. Returns JWT access token and refresh token.")
-  @ApiResponses({
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-        responseCode = "200",
-        description = "Successfully authenticated"),
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-        responseCode = "401",
-        description = "Invalid credentials")
-  })
   public ResponseEntity<ApiResponse<TokenResponse>> login(
       @Valid @RequestBody AuthRequest request,
       HttpServletRequest httpServletRequest,
@@ -63,17 +54,6 @@ public class IAMController {
       summary = "Register new user",
       description =
           "Create a new user account. Sends a verification email. Default role is 'user'.")
-  @ApiResponses({
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-        responseCode = "201",
-        description = "User created successfully"),
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-        responseCode = "409",
-        description = "Username or email already exists"),
-    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-        responseCode = "400",
-        description = "Validation error")
-  })
   public ResponseEntity<ApiResponse<ResidentOnboardingResponse>> register(
       @Valid @RequestBody ResidentOnboardingRequest request,
       HttpServletRequest httpServletRequest) {

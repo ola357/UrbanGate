@@ -1,6 +1,7 @@
 // Copyright (c) UrbanGate
 package com.urbangate.iam.tenant;
 
+import com.urbangate.iam.util.TenantContext;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

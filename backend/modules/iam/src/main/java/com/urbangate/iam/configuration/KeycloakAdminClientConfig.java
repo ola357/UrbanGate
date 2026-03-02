@@ -21,7 +21,7 @@ public class KeycloakAdminClientConfig {
     log.info("Initializing Keycloak Admin Client...");
     return KeycloakBuilder.builder()
         .serverUrl(properties.getServerUrl())
-        .realm("master")
+        .realm(properties.getAdminRealm())
         .grantType(OAuth2Constants.PASSWORD)
         .clientId(properties.getAdminClientId())
         .username(properties.getAdminUsername())

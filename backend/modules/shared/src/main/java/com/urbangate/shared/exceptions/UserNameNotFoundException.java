@@ -5,10 +5,11 @@ import com.urbangate.shared.enums.ExceptionResponse;
 import lombok.Getter;
 
 public class UserNameNotFoundException extends RuntimeException {
-  @Getter private String code;
+  @Getter private final String code;
 
   public UserNameNotFoundException(String message) {
     super(message);
+    this.code = null;
   }
 
   public UserNameNotFoundException(ExceptionResponse response) {

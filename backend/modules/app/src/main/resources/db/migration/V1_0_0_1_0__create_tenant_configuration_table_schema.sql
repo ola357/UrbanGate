@@ -14,10 +14,11 @@ CREATE TABLE IF NOT EXISTS tenant_configurations (
     name VARCHAR(255) NOT NULL,
     description TEXT,
     icon VARCHAR(500),
-    creator BIGINT NOT NULL,
+    creator TEXT NOT NULL,
     address TEXT NOT NULL,
     state VARCHAR(100) NOT NULL,
     phone VARCHAR(20),
+    default_access_code_expiry_in_minutes BIGINT NOT NULL,
 
     created_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

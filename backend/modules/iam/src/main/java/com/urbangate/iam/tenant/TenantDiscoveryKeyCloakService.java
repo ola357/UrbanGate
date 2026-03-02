@@ -2,14 +2,15 @@
 package com.urbangate.iam.tenant;
 
 import com.urbangate.iam.configuration.KeycloakProperties;
-import com.urbangate.iam.entity.TenantConfiguration;
-import com.urbangate.iam.repository.TenantConfigurationRepository;
-import com.urbangate.iam.repository.impl.TenantConfigurationRedisImpl;
+import com.urbangate.iam.util.TenantContext;
 import com.urbangate.shared.dto.SmtpConfig;
 import com.urbangate.shared.dto.TenantAdditionalInfo;
 import com.urbangate.shared.dto.TenantConfig;
+import com.urbangate.shared.entity.TenantConfiguration;
 import com.urbangate.shared.enums.ExceptionResponse;
 import com.urbangate.shared.exceptions.ConflictException;
+import com.urbangate.shared.repository.TenantConfigurationRepository;
+import com.urbangate.shared.service.TenantConfigurationRedisImpl;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -82,7 +83,7 @@ public class TenantDiscoveryKeyCloakService {
     // Set up default roles, clients, SMTP for this tenant
 
     setupDefaultRoles(realmName);
-    setupMobileClient(realmName, config);
+    setupMobileClient(realmName);
     createTenantConfiguration(tenantId, config.tenantAdditionalInfo());
     if (config.smtpConfig() != null) {
       setupSmtp(realmName, config.smtpConfig());
@@ -107,6 +108,8 @@ public class TenantDiscoveryKeyCloakService {
         additionalInfo.numberOfDaysBeforeUpcomingPayment());
     tenantConfiguration.setSendBirthdayShout(additionalInfo.sendBirthdayShout());
     tenantConfiguration.setPayableBills(additionalInfo.payableBills());
+    tenantConfiguration.setDefaultAccessCodeExpiryInMinutes(
+        additionalInfo.defaultAccessCodeExpiryInMinutes());
 
     TenantConfiguration saved = tenantConfigurationRepository.insert(tenantConfiguration);
     tenantConfigurationRedisImpl.save(saved);
@@ -132,13 +135,13 @@ public class TenantDiscoveryKeyCloakService {
     log.info("Default roles created for realm: {}", realmName);
   }
 
-  private void setupMobileClient(String realmName, TenantConfig config) {
+  private void setupMobileClient(String realmName) {
     var client = new org.keycloak.representations.idm.ClientRepresentation();
     client.setClientId(keycloakProperties.getPublicClientId());
     client.setPublicClient(true);
     client.setDirectAccessGrantsEnabled(true);
     client.setEnabled(true);
-    client.setRedirectUris(List.of("*"));
+    client.setRedirectUris(List.of(keycloakProperties.getRedirectUri()));
     keycloak.realm(realmName).clients().create(client);
     log.info("Mobile client created for realm: {}", realmName);
   }

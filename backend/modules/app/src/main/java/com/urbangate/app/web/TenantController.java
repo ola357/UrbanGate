@@ -25,16 +25,17 @@ public class TenantController {
   private final TenantDiscoveryKeyCloakService tenantService;
 
   @PostMapping("/{tenantId}")
-  public ResponseEntity<ApiResponse<?>> provision(
+  public ResponseEntity<ApiResponse<String>> provision(
       @PathVariable String tenantId, @Valid @RequestBody TenantConfig config) {
     tenantService.provisionTenant(tenantId, config);
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(new ApiResponse<>().success("Tenant '" + tenantId + "' provisioned"));
+        .body(new ApiResponse<String>().success("Tenant '" + tenantId + "' provisioned"));
   }
 
   @DeleteMapping("/{tenantId}")
-  public ResponseEntity<ApiResponse<?>> delete(@PathVariable String tenantId) {
+  public ResponseEntity<ApiResponse<String>> delete(@PathVariable String tenantId) {
     tenantService.deleteTenant(tenantId);
-    return ResponseEntity.ok(new ApiResponse<>().success("Tenant '" + tenantId + "' deleted"));
+    return ResponseEntity.ok(
+        new ApiResponse<String>().success("Tenant '" + tenantId + "' deleted"));
   }
 }

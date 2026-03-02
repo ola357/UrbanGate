@@ -5,10 +5,11 @@ import com.urbangate.shared.enums.ExceptionResponse;
 import lombok.Getter;
 
 public class InvalidResetTokenException extends RuntimeException {
-  @Getter private String code;
+  @Getter private final String code;
 
   public InvalidResetTokenException(String message) {
     super(message);
+    this.code = null;
   }
 
   public InvalidResetTokenException(ExceptionResponse response) {

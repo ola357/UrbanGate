@@ -1,14 +1,16 @@
 // Copyright (c) UrbanGate
-package com.urbangate.iam.repository.impl;
+package com.urbangate.shared.repository.impl;
 
-import com.urbangate.iam.entity.TenantConfiguration;
-import com.urbangate.iam.repository.TenantConfigurationRepository;
+import com.urbangate.shared.entity.TenantConfiguration;
 import com.urbangate.shared.enums.EntityStatus;
+import com.urbangate.shared.enums.PayableBills;
+import com.urbangate.shared.repository.TenantConfigurationRepository;
 import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 public class TenantConfigurationRepositoryImpl implements TenantConfigurationRepository {
 
   private final NamedParameterJdbcTemplate jdbcTemplate;
+  private static final String REALM_KEY = "realm";
 
   @Override
   public TenantConfiguration insert(TenantConfiguration config) {
@@ -45,6 +48,7 @@ public class TenantConfigurationRepositoryImpl implements TenantConfigurationRep
                 send_birthday_shout,
                 maximum_guests_for_multiple_code,
                 payable_bills,
+                default_access_code_expiry_in_minutes,
                 created_on,
                 last_modified_on,
                 entity_status
@@ -63,6 +67,7 @@ public class TenantConfigurationRepositoryImpl implements TenantConfigurationRep
                 :send_birthday_shout,
                 :maximum_guests_for_multiple_code,
                 :payable_bills,
+                      :default_access_code_expiry_in_minutes,
                 :created_on,
                 :last_modified_on,
                 :entity_status
@@ -72,7 +77,7 @@ public class TenantConfigurationRepositoryImpl implements TenantConfigurationRep
     MapSqlParameterSource params =
         new MapSqlParameterSource()
             .addValue("name", config.getName())
-            .addValue("realm", config.getRealm())
+            .addValue(REALM_KEY, config.getRealm())
             .addValue("description", config.getDescription())
             .addValue("icon", config.getIcon())
             .addValue("creator", config.getCreator())
@@ -89,11 +94,12 @@ public class TenantConfigurationRepositoryImpl implements TenantConfigurationRep
             .addValue(
                 "payable_bills",
                 config.getPayableBills() != null
-                    ? config.getPayableBills().stream()
-                        .map(Enum::name) // convert PayableBills -> String
-                        .toArray(String[]::new)
+                    ? config.getPayableBills().stream().map(Enum::name).toArray(String[]::new)
                     : new String[0],
                 Types.ARRAY)
+            .addValue(
+                "default_access_code_expiry_in_minutes",
+                config.getDefaultAccessCodeExpiryInMinutes())
             .addValue("created_on", config.getCreatedOn())
             .addValue("last_modified_on", config.getLastModifiedOn())
             .addValue(
@@ -106,7 +112,7 @@ public class TenantConfigurationRepositoryImpl implements TenantConfigurationRep
       return jdbcTemplate.queryForObject(sql, params, (rs, rowNum) -> mapToEstateConfiguration(rs));
     } catch (Exception e) {
       log.error("Error inserting estate configuration", e);
-      throw new RuntimeException("Failed to insert estate configuration", e);
+      throw new IllegalArgumentException("Failed to insert estate configuration", e);
     }
   }
 
@@ -120,7 +126,7 @@ public class TenantConfigurationRepositoryImpl implements TenantConfigurationRep
     configuration.setAddress(rs.getString("address"));
     configuration.setState(rs.getString("state"));
     configuration.setPhone(rs.getString("phone"));
-    configuration.setRealm(rs.getString("realm"));
+    configuration.setRealm(rs.getString(REALM_KEY));
     configuration.setNumberOfDaysBeforeOverdue(rs.getInt("number_of_days_before_overdue"));
     configuration.setNumberOfDaysBeforeUpcomingPayment(
         rs.getInt("number_of_days_before_upcoming_payment"));
@@ -128,11 +134,10 @@ public class TenantConfigurationRepositoryImpl implements TenantConfigurationRep
     configuration.setSendBirthdayShout(rs.getBoolean("send_birthday_shout"));
     configuration.setMaximumGuestsForMultipleCode(rs.getInt("maximum_guests_for_multiple_code"));
 
-    // Handle array
     Array billsArray = rs.getArray("payable_bills");
     if (billsArray != null) {
-      String[] bills = (String[]) billsArray.getArray();
-      //            configuration.setPayableBills( Arrays.asList( bills));
+      PayableBills[] bills = (PayableBills[]) billsArray.getArray();
+      configuration.setPayableBills(Arrays.asList(bills));
     } else {
       configuration.setPayableBills(new ArrayList<>());
     }
@@ -192,10 +197,10 @@ public class TenantConfigurationRepositoryImpl implements TenantConfigurationRep
           sql.toString(), params, (rs, rowNum) -> mapToEstateConfiguration(rs));
     } catch (EmptyResultDataAccessException e) {
       log.error("Estate configuration with id {} not found", id);
-      throw new RuntimeException("Estate configuration not found");
+      throw new IllegalArgumentException("Estate configuration not found");
     } catch (Exception e) {
       log.error("Error updating estate configuration", e);
-      throw new RuntimeException("Failed to update estate configuration", e);
+      throw new IllegalArgumentException("Failed to update estate configuration", e);
     }
   }
 
@@ -227,7 +232,7 @@ public class TenantConfigurationRepositoryImpl implements TenantConfigurationRep
                 WHERE realm = :realm
                 """;
 
-    MapSqlParameterSource params = new MapSqlParameterSource().addValue("realm", realm);
+    MapSqlParameterSource params = new MapSqlParameterSource().addValue(REALM_KEY, realm);
 
     try {
       TenantConfiguration estate =
