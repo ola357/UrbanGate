@@ -1,8 +1,10 @@
 plugins {
+    id("org.springframework.boot")
     id("io.spring.dependency-management")
     id("io.freefair.lombok")
     java
 }
+
 
 dependencies {
     implementation(project(":modules:shared"))
@@ -19,5 +21,8 @@ dependencies {
     implementation("org.springframework.security:spring-security-oauth2-jose")
     compileOnly("jakarta.servlet:jakarta.servlet-api:6.0.0")
     implementation("org.keycloak:keycloak-admin-client:23.0.7")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
     // Keep modules clean: no web starter here. Add JPA only when the module owns persistence.
 }

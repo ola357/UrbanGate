@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.urbangate.iam.dto.request.CreateRoleRequest;
 import com.urbangate.iam.dto.response.RoleResponse;
 import com.urbangate.iam.service.KeycloakRoleService;
-import com.urbangate.iam.tenant.TenantResolutionFilter;
+import com.urbangate.iam.util.TenantResolutionFilter;
 import com.urbangate.shared.exceptions.ConflictException;
 import com.urbangate.shared.exceptions.ResourceNotFoundException;
 import java.util.List;

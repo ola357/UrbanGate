@@ -2,7 +2,6 @@
 package com.urbangate.iam.service;
 
 import com.urbangate.iam.repository.impl.ResetTokenServiceImpl;
-import com.urbangate.iam.tenant.TenantDiscoveryKeyCloakService;
 import com.urbangate.shared.enums.ExceptionResponse;
 import com.urbangate.shared.exceptions.InvalidResetTokenException;
 import com.urbangate.shared.exceptions.UserNameNotFoundException;

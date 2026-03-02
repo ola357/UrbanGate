@@ -1,5 +1,5 @@
 // Copyright (c) UrbanGate
-package com.urbangate.iam.tenant;
+package com.urbangate.iam.service;
 
 import com.urbangate.iam.configuration.KeycloakProperties;
 import com.urbangate.iam.util.TenantContext;

@@ -1,7 +1,7 @@
 // Copyright (c) UrbanGate
 package com.urbangate.app.web;
 
-import com.urbangate.iam.tenant.TenantDiscoveryKeyCloakService;
+import com.urbangate.iam.service.TenantDiscoveryKeyCloakService;
 import com.urbangate.shared.dto.ApiResponse;
 import com.urbangate.shared.dto.TenantConfig;
 import jakarta.validation.Valid;

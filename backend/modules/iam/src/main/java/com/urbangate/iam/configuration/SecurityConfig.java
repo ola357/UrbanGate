@@ -1,7 +1,7 @@
 // Copyright (c) UrbanGate
 package com.urbangate.iam.configuration;
 
-import static com.urbangate.iam.tenant.TenantResolutionFilter.resolveTenant;
+import static com.urbangate.iam.util.TenantResolutionFilter.resolveTenant;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 // Copyright (c) UrbanGate
 package com.urbangate.iam.service;
 
-import static com.urbangate.iam.tenant.TenantResolutionFilter.resolveTenant;
+import static com.urbangate.iam.util.TenantResolutionFilter.resolveTenant;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

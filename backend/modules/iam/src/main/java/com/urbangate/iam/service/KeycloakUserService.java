@@ -1,7 +1,7 @@
 // Copyright (c) UrbanGate
 package com.urbangate.iam.service;
 
-import static com.urbangate.iam.tenant.TenantResolutionFilter.resolveTenant;
+import static com.urbangate.iam.util.TenantResolutionFilter.resolveTenant;
 
 import com.urbangate.iam.dto.request.PasswordRequest;
 import com.urbangate.iam.dto.request.ResidentOnboardingRequest;
@@ -10,7 +10,6 @@ import com.urbangate.iam.dto.response.ResidentOnboardingResponse;
 import com.urbangate.iam.dto.response.UserResponse;
 import com.urbangate.iam.entity.ActivationCode;
 import com.urbangate.iam.repository.ActivationCodeRepository;
-import com.urbangate.iam.tenant.TenantDiscoveryKeyCloakService;
 import com.urbangate.shared.entity.TenantConfiguration;
 import com.urbangate.shared.enums.ExceptionResponse;
 import com.urbangate.shared.exceptions.ConflictException;

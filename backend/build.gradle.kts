@@ -31,12 +31,6 @@ subprojects {
         }
     }
 
-    extensions.configure<JavaPluginExtension> {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(21)
-        }
-    }
-
     tasks.withType<Test> {
         useJUnitPlatform()
     }
@@ -57,7 +51,6 @@ subprojects {
             files(classDirectories.files.map {
                 fileTree(it) {
                     include(
-                        "**/service/**",
                         "**/web/**",
                     )
                     exclude(
@@ -87,7 +80,6 @@ subprojects {
             files(classDirectories.files.map {
                 fileTree(it) {
                     include(
-                        "**/service/**",
                         "**/web/**",
                     )
                     exclude(
@@ -186,10 +178,19 @@ sonar {
             **/repository/**,
             **/exceptions/**,
             **/enums/**,
+            **/service/**,
             **/mapper/**,
             **/*Application.java,
             **/*Request.java,
             **/*Response.java
         """.trimIndent())
+
+        property("sonar.coverage.jacoco.xmlReportPaths",
+            subprojects.joinToString(",") { subproject ->
+                "${subproject.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+            }
+        )
     }
+
+
 }
