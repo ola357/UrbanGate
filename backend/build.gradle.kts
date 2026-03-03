@@ -155,7 +155,7 @@ tasks.register("lint") {
     dependsOn("spotlessCheck", "checkstyleMain", "checkstyleTest")
 }
 
-// SonarCloud config (fill required props in CI)
+
 
 sonar {
     properties {
