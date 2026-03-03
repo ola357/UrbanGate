@@ -17,6 +17,13 @@ const config: ExpoConfig = {
       projectId: "a7ae05ee-e088-46a4-8474-04818a5302f4",
     },
   },
+  ios: {
+    bundleIdentifier: "com.urbangate.app",
+    supportsTablet: true,
+  },
+  android: {
+    package: "com.urbangate.app",
+  },
 };
 
 export default config;
