@@ -3,8 +3,8 @@
 ## Run
 ```bash
 cd mobile
-npm install
-npm run start
+pnpm install
+pnpm start
 ```
 
 ## Configure API base URL
@@ -24,7 +24,7 @@ Examples:
 
 Then run:
 ```bash
-npm run start
+pnpm start
 ```
 
 ## What this scaffold includes
