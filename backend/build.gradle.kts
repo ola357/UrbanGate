@@ -151,11 +151,9 @@ tasks.register("format") {
 
 tasks.register("lint") {
     group = "verification"
-    description = "Runs style and static analysis checks"
+    description = "Runs a style and static analysis checks"
     dependsOn("spotlessCheck", "checkstyleMain", "checkstyleTest")
 }
-
-
 
 sonar {
     properties {
