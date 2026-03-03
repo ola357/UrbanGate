@@ -1,4 +1,4 @@
-name: Backend CI + Dev Deploy
+name: Backend CI + CD
 
 on:
   pull_request:
@@ -6,14 +6,16 @@ on:
     paths:
       - "backend/**"
       - ".github/workflows/backend-ci.yml"
+      - "GitVersion.yml"
 
   push:
     branches:
       - "main"
-
+      - "feature/**"
     paths:
       - "backend/**"
       - ".github/workflows/backend-ci.yml"
+      - "GitVersion.yml"
 
   workflow_dispatch:
 
@@ -39,8 +41,8 @@ jobs:
 
     outputs:
       semver: ${{ steps.gitversion.outputs.semver }}
-      short_sha: ${{ steps.vars.outputs.short_sha }}
       owner_lc: ${{ steps.vars.outputs.owner_lc }}
+      short_sha: ${{ steps.vars.outputs.short_sha }}
 
     steps:
       - uses: actions/checkout@v4
@@ -57,42 +59,6 @@ jobs:
       - name: Build + test + quality checks
         run: ./gradlew clean check spotlessCheck
 
-      # GitVersion (SemVer) - uses .NET global tool
-      - name: Setup .NET (for GitVersion)
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "8.0.x"
-
-      - name: Install GitVersion
-        run: |
-          dotnet tool install --global GitVersion.Tool --version 5.12.0
-          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
-
-      - name: GitVersion diagnostics
-        working-directory: .
-        run: |
-          echo "PWD=$(pwd)"
-          ls -al
-          git status --porcelain || true
-          git branch -a || true
-          git log -5 --oneline || true
-          test -f GitVersion.yml && echo "GitVersion.yml found" || (echo "GitVersion.yml missing" && exit 1)
-          dotnet-gitversion /config GitVersion.yml /showvariable SemVer || true
-
-      - name: Compute version
-        id: gitversion
-        working-directory: .
-        run: |
-          SEMVER=$(dotnet-gitversion /config GitVersion.yml /showvariable SemVer)
-          echo "semver=$SEMVER" >> "$GITHUB_OUTPUT"
-
-      - name: Compute vars
-        id: vars
-        run: |
-          echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
-          OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          echo "owner_lc=$OWNER_LC" >> "$GITHUB_OUTPUT"
-
       - name: Cache Sonar packages
         uses: actions/cache@v4
         with:
@@ -100,7 +66,7 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: SonarCloud analysis
+      - name: SonarCloud analysis (wait for quality gate)
         if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -115,10 +81,34 @@ jobs:
             -Dsonar.qualitygate.wait=true \
             -Dsonar.qualitygate.timeout=300
 
+      - name: Setup .NET (for GitVersion)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install GitVersion
+        run: dotnet tool install --global GitVersion.Tool
+
+      - name: Compute version (repo root)
+        id: gitversion
+        working-directory: .
+        run: |
+          SEMVER=$(dotnet-gitversion /config GitVersion.yml /showvariable SemVer)
+          echo "semver=$SEMVER" >> "$GITHUB_OUTPUT"
+
+      - name: Compute vars
+        id: vars
+        working-directory: .
+        run: |
+          OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "owner_lc=$OWNER_LC" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
   build_image:
-    name: Build & Push image to GHCR
+    name: Build & Push GHCR image
     runs-on: ubuntu-latest
     needs: [ ci ]
+    environment: dev
 
     outputs:
       image: ${{ steps.meta.outputs.image }}
@@ -130,14 +120,9 @@ jobs:
         id: meta
         run: |
           OWNER_LC="${{ needs.ci.outputs.owner_lc }}"
-          IMAGE_BASE="ghcr.io/${OWNER_LC}/urbangate-backend"
-          IMAGE_SEMVER="${IMAGE_BASE}:${{ needs.ci.outputs.semver }}"
-          IMAGE_SHA="${IMAGE_BASE}:sha-${{ needs.ci.outputs.short_sha }}"
-
-          echo "image=${IMAGE_SEMVER}" >> "$GITHUB_OUTPUT"
-          echo "IMAGE_SEMVER=${IMAGE_SEMVER}" >> "$GITHUB_ENV"
-          echo "IMAGE_SHA=${IMAGE_SHA}" >> "$GITHUB_ENV"
-          echo "IMAGE_LATEST=${IMAGE_BASE}:latest" >> "$GITHUB_ENV"
+          IMAGE="ghcr.io/${OWNER_LC}/urbangate-backend:${{ needs.ci.outputs.semver }}"
+          echo "image=$IMAGE" >> "$GITHUB_OUTPUT"
+          echo "IMAGE=$IMAGE" >> "$GITHUB_ENV"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -156,8 +141,8 @@ jobs:
           file: backend/Dockerfile
           push: true
           tags: |
-            ${{ env.IMAGE_SEMVER }}
-            ${{ env.IMAGE_SHA }}
+            ${{ env.IMAGE }}
+            ghcr.io/${{ needs.ci.outputs.owner_lc }}/urbangate-backend:sha-${{ needs.ci.outputs.short_sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -168,20 +153,17 @@ jobs:
           context: backend
           file: backend/Dockerfile
           push: true
-          tags: |
-            ${{ env.IMAGE_LATEST }}
+          tags: ghcr.io/${{ needs.ci.outputs.owner_lc }}/urbangate-backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
   deploy_dev:
-    name: Deploy to Azure Container Apps (dev)
+    name: Deploy to ACA (dev)
     runs-on: ubuntu-latest
     needs: [ build_image, ci ]
-
-    # Deploy for PRs and feature branches and main (your preference is PR->dev)
-    if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feature/') }}
-
     environment: dev
+
+    if: ${{ github.event_name == 'pull_request' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feature/') }}
 
     steps:
       - name: Azure login (OIDC)
@@ -191,10 +173,18 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Update DB secret in ACA (db-password)
+        run: |
+          az containerapp secret set \
+            --name "${{ secrets.AZURE_CONTAINER_APP_NAME }}" \
+            --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+            --secrets db-password='${{ secrets.TF_VAR_PG_ADMIN_PASSWORD }}'
+
       - name: Deploy image to Container App
         run: |
           az containerapp update \
             --name "${{ secrets.AZURE_CONTAINER_APP_NAME }}" \
             --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
             --image "${{ needs.build_image.outputs.image }}" \
-            --set-env-vars APP_VERSION="${{ needs.ci.outputs.semver }}" GIT_SHA="${{ github.sha }}"
+            --set-env-vars APP_VERSION="${{ needs.ci.outputs.semver }}" GIT_SHA="${{ github.sha }}" \
+            --max-replicas 1

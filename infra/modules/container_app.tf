@@ -32,6 +32,10 @@ resource "azurerm_container_app" "app" {
   }
 
   template {
+
+    min_replicas = 0
+    max_replicas = 2
+
     container {
       name   = "backend"
       image  = var.backend_image
