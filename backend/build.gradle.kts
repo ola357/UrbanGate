@@ -160,11 +160,6 @@ tasks.register("lint") {
 sonar {
     properties {
 
-        property("sonar.projectKey", "urban-gate")
-        property("sonar.organization", "Urban gate")
-        property("sonar.projectName", "Urban gate")
-        property("sonar.host.url", System.getenv("SONAR_URL"))
-        property("sonar.token", System.getenv("SONARQUBE"))
         property("sonar.java.coveragePlugin", "jacoco")
         property("sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/test/jacocoTestReport.xml")
 
