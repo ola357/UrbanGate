@@ -126,7 +126,7 @@ TN:
 SF:src/screens/HomeScreen.tsx
 FN:6,HomeScreen
 FN:32,(anonymous_1)
-FN:43,(anonymous_2)
+FN:45,(anonymous_2)
 FNF:3
 FNH:3
 FNDA:3,HomeScreen
@@ -135,8 +135,8 @@ FNDA:1,(anonymous_2)
 DA:7,3
 DA:9,3
 DA:32,1
-DA:43,1
-DA:58,1
+DA:45,1
+DA:60,1
 LF:5
 LH:5
 BRDA:14,0,0,3
@@ -146,8 +146,8 @@ BRDA:21,1,0,3
 BRDA:21,1,1,1
 BRDA:38,2,0,3
 BRDA:38,2,1,1
-BRDA:41,3,0,1
-BRDA:41,3,1,0
+BRDA:42,3,0,1
+BRDA:42,3,1,0
 BRF:9
 BRH:8
 end_of_record
