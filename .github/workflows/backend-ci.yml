@@ -125,18 +125,24 @@ jobs:
         working-directory: .
         run: |
           set -euo pipefail
+          OUT_LOG="$(mktemp)"
           ERR_LOG="$(mktemp)"
-          if ! SEMVER=$(dotnet-gitversion /config GitVersion.yml /showvariable SemVer 2>"$ERR_LOG"); then
-            echo "GitVersion failed. Full stderr:"
+          if ! dotnet-gitversion /config GitVersion.yml /showvariable SemVer >"$OUT_LOG" 2>"$ERR_LOG"; then
+            echo "GitVersion failed. stdout:"
+            cat "$OUT_LOG"
+            echo "GitVersion failed. stderr:"
             cat "$ERR_LOG"
-            rm -f "$ERR_LOG"
+            echo "Re-running GitVersion with full output for diagnostics:"
+            dotnet-gitversion /config GitVersion.yml || true
+            rm -f "$OUT_LOG" "$ERR_LOG"
             exit 1
           fi
           if [ -s "$ERR_LOG" ]; then
             echo "GitVersion warnings:"
             cat "$ERR_LOG"
           fi
-          rm -f "$ERR_LOG"
+          SEMVER="$(cat "$OUT_LOG")"
+          rm -f "$OUT_LOG" "$ERR_LOG"
           echo "semver=$SEMVER" >> "$GITHUB_OUTPUT"
           echo "GitVersion semver: $SEMVER"
 
