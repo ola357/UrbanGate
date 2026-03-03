@@ -33,5 +33,20 @@ pnpm start
 - Clean-ish feature separation (`src/features/version`)
 - A simple `/api/v1/version` fetch displayed on the home screen
 
+## EAS credentials (CI)
+Non-interactive EAS builds require credentials to already exist in Expo.
+If CI fails with "Generating a new Keystore is not supported in --non-interactive mode",
+run this once locally to generate or upload Android credentials:
+
+```bash
+eas credentials -p android
+```
+
+Do the same for iOS if you plan to build iOS in CI:
+
+```bash
+eas credentials -p ios
+```
+
 ## Health Screen
 Open `/health` to check backend connectivity with a Retry UX.
