@@ -165,9 +165,18 @@ jobs:
             exit 1
           fi
 
-      - name: EAS Build (prod)
+      - name: Select EAS build profile
+        id: eas-profile
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "profile=dev" >> "$GITHUB_OUTPUT"
+          else
+            echo "profile=prod" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: EAS Build
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           eas whoami
-          eas build --platform all --profile prod --non-interactive
+          eas build --platform all --profile "${{ steps.eas-profile.outputs.profile }}" --non-interactive
