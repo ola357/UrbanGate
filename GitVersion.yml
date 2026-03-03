@@ -5,7 +5,6 @@ branches:
   main:
     regex: ^main$
     increment: Minor
-    is-mainline: true
     tag: ""
 
   feature:
