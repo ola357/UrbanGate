@@ -23,6 +23,7 @@ public class PasswordResetService {
   private final TenantDiscoveryKeyCloakService tenantDiscoveryKeyCloakService;
   private final ResetTokenServiceImpl tokenService;
   private final EmailService emailService;
+  private static final SecureRandom RANDOM = new SecureRandom();
 
   public void initiatePasswordReset(String email) {
     List<UserRepresentation> users = getRealmResource().users().searchByEmail(email, true);
@@ -70,7 +71,7 @@ public class PasswordResetService {
   }
 
   private String generateSecureCode() {
-    return String.format("%06d", new SecureRandom().nextInt(999_999));
+    return String.format("%06d", RANDOM.nextInt(999_999));
   }
 
   private RealmResource getRealmResource() {

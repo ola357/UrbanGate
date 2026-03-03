@@ -40,6 +40,8 @@ public class AccessCodeService {
   private final Keycloak keycloak;
   private final TenantConfigurationRedisImpl tenantConfigurationRedis;
   private final TenantConfigurationRepository tenantConfigurationRepository;
+  private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  private static final SecureRandom RANDOM = new SecureRandom();
 
   // TODOX : ADD CHECKIN FLAG TO ACCESS CODES
 
@@ -216,11 +218,8 @@ public class AccessCodeService {
   }
 
   public static String generateAccessCode() {
-    String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    SecureRandom random = new SecureRandom();
-
     return IntStream.range(0, 6)
-        .mapToObj(i -> String.valueOf(characters.charAt(random.nextInt(characters.length()))))
+        .mapToObj(i -> String.valueOf(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length()))))
         .collect(Collectors.joining());
   }
 
