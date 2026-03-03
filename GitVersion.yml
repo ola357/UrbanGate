@@ -6,9 +6,6 @@ branches:
     regex: ^main$
     increment: Minor
     is-mainline: true
-    prevent-increment-of-merged-branch-version: true
-    track-merge-target: true
-    source-branches: [ feature ]
     tag: ""
 
   feature:
@@ -16,7 +13,3 @@ branches:
     increment: Inherit
     source-branches: [ main ]
     tag: useBranchName
-
-ignore:
-  sha: []
-merge-message-formats: {}
