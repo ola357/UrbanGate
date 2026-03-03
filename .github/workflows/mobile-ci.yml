@@ -77,7 +77,7 @@ jobs:
         run: pnpm run typecheck
 
       - name: Unit tests (CI)
-        run: pnpm run test -- --ci
+        run: pnpm run test:ci
 
       - name: Coverage
         run: pnpm run coverage
