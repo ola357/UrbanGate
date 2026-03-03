@@ -170,8 +170,10 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             echo "profile=dev" >> "$GITHUB_OUTPUT"
+            echo "platform=android" >> "$GITHUB_OUTPUT"
           else
             echo "profile=prod" >> "$GITHUB_OUTPUT"
+            echo "platform=all" >> "$GITHUB_OUTPUT"
           fi
 
       - name: EAS Build
@@ -179,4 +181,4 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           eas whoami
-          eas build --platform all --profile "${{ steps.eas-profile.outputs.profile }}" --non-interactive
+          eas build --platform "${{ steps.eas-profile.outputs.platform }}" --profile "${{ steps.eas-profile.outputs.profile }}" --non-interactive

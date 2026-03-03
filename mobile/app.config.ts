@@ -20,6 +20,9 @@ const config: ExpoConfig = {
   ios: {
     bundleIdentifier: "com.urbangate.app",
     supportsTablet: true,
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
+    },
   },
   android: {
     package: "com.urbangate.app",
