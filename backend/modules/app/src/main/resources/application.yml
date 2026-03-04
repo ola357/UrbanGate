@@ -70,6 +70,7 @@ keycloak:
   public-client-id: mobile-app
   admin-realm: master
   redirect-uri: "*"
+  trusted-origin: "*"
 
 
 scheduler:

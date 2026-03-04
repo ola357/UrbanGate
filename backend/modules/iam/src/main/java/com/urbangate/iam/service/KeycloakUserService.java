@@ -20,10 +20,10 @@ import com.urbangate.shared.service.EmailService;
 import com.urbangate.shared.service.TenantConfigurationRedisImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.core.Response;
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -47,6 +47,7 @@ public class KeycloakUserService {
   private final TenantConfigurationRepository tenantConfigurationRepository;
   private final TenantConfigurationRedisImpl tenantConfigurationRedisImpl;
   private final EmailService emailService;
+  private static final SecureRandom RANDOM = new SecureRandom();
 
   @Value("${activation-code.ttl-in-minutes:5}")
   private int activationCodeTtlInMinutes;
@@ -140,7 +141,7 @@ public class KeycloakUserService {
   }
 
   private int generateUniqueCode() {
-    return ThreadLocalRandom.current().nextInt(1000, 10000);
+    return RANDOM.nextInt(9000) + 1000;
   }
 
   public PasswordResponse setUpPassword(PasswordRequest request) {
