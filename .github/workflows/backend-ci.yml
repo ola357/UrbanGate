@@ -236,5 +236,4 @@ jobs:
             --name "${{ secrets.AZURE_CONTAINER_APP_NAME }}" \
             --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
             --image "${{ needs.build_image.outputs.image }}" \
-            --set-env-vars APP_VERSION="${{ needs.ci.outputs.semver }}" GIT_SHA="${{ github.sha }}" \
-            --max-replicas 1
+            --set-env-vars APP_VERSION="${{ needs.ci.outputs.semver }}" GIT_SHA="${{ github.sha }}"
