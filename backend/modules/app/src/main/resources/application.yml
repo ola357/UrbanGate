@@ -4,8 +4,52 @@ spring:
   profiles:
     active: dev
 
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: false
+    clean-disabled: true
+    out-of-order: true
+    locations:
+      - classpath:db/migration
+    table: flyway_schema_history
+
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      database: 0
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 5
+          min-idle: 1
+          max-wait: 2000ms
+          enabled: true
+
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    from: no-reply@urbangate.com
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+        connectiontimeout: 5000
+        timeout: 5000
+        writetimeout: 5000
+
+
 server:
-  port: 8080
+  port: 8002
 
 management:
   endpoints:
@@ -16,6 +60,31 @@ management:
     health:
       probes:
         enabled: true
+
+
+keycloak:
+  url: ${KEYCLOAK_URL:http://localhost:8088}
+  admin-client-id: ${KEYCLOAK_ADMIN_CLIENT_ID}
+  admin-password: ug-admin_password
+  admin-username: admin
+  public-client-id: mobile-app
+  admin-realm: master
+  redirect-uri: "*"
+  trusted-origin: "*"
+
+
+scheduler:
+  activation-code:
+    revoke-schedule-time: 6000
+  access-code:
+    revoke-schedule-time: 6000
+
+app:
+  redis:
+    default-ttl: 4000
+
+activation-code:
+  ttl-in-hours: 12
 
 urbangate:
   env: dev

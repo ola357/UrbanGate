@@ -2,8 +2,10 @@ plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
     id("io.freefair.lombok")
-    id("com.github.spotbugs")
 }
+
+val springDocVersion = "2.3.0"
+val flyWayVersion = "11.20.3"
 
 dependencies {
     implementation(project(":modules:shared"))
@@ -21,12 +23,16 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.flywaydb:flyway-core:11.20.3")
-    implementation("org.flywaydb:flyway-database-postgresql:11.20.3")
+    implementation("org.flywaydb:flyway-core:$flyWayVersion")
+    implementation("org.flywaydb:flyway-database-postgresql:$flyWayVersion")
     runtimeOnly("org.postgresql:postgresql")
 
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
     testImplementation("com.h2database:h2")
 }
