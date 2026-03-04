@@ -1,1 +1,0 @@
-Add your app icons here (adaptive-icon.png, icon.png, splash.png).
