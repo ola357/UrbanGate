@@ -80,6 +80,7 @@ function RootLayoutNav() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="access-code" />
+        <Stack.Screen name="bill-payment" />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>
       {isAuthenticated ? (

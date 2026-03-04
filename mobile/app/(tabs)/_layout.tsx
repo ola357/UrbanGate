@@ -19,7 +19,7 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
-      <Tabs.Screen name="bills" options={{ title: "Bills" }} />
+      <Tabs.Screen name="bills" options={{ title: "Bills", headerShown: false }} />
       <Tabs.Screen name="wallet" options={{ title: "Wallet" }} />
       <Tabs.Screen name="events" options={{ title: "Events" }} />
       <Tabs.Screen name="contacts" options={{ title: "Contacts" }} />

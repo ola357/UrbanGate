@@ -8,7 +8,13 @@ const config: ExpoConfig = {
   version: "0.1.0",
   orientation: "portrait",
   userInterfaceStyle: "automatic",
-  plugins: ["expo-router"],
+  android: {
+    package: "com.urbangate.app",
+  },
+  ios: {
+    bundleIdentifier: "com.urbangate.app",
+  },
+  plugins: ["expo-router", "@react-native-community/datetimepicker"],
   experiments: { typedRoutes: true },
   extra: {
     // Prefer setting this via EXPO_PUBLIC_API_BASE_URL in your shell or .env
