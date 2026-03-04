@@ -36,9 +36,7 @@ export function BillListItem({ bill, onPay, showSeparator = true }: BillListItem
           Pay
         </Button>
       </View>
-      {showSeparator && (
-        <View style={[styles.separator, { backgroundColor: colors.border }]} />
-      )}
+      {showSeparator && <View style={[styles.separator, { backgroundColor: colors.border }]} />}
     </>
   );
 }

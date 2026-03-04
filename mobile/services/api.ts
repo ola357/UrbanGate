@@ -19,10 +19,7 @@ export const authApi = {
     };
   },
 
-  login: async (
-    phone: string,
-    password: string,
-  ): Promise<{ token: string; user: UserData }> => {
+  login: async (phone: string, password: string): Promise<{ token: string; user: UserData }> => {
     await delay(1000);
 
     if (phone === "123456789" && password === "Demo@123.") {
@@ -51,10 +48,7 @@ export const authApi = {
     return { success: true };
   },
 
-  verifyResetOtp: async (
-    _phone: string,
-    code: string,
-  ): Promise<{ resetToken: string }> => {
+  verifyResetOtp: async (_phone: string, code: string): Promise<{ resetToken: string }> => {
     await delay(1000);
     if (code !== "123456") {
       throw new Error("Invalid verification code");
@@ -62,10 +56,7 @@ export const authApi = {
     return { resetToken: "dummy-reset-token-789" };
   },
 
-  resetPassword: async (
-    _resetToken: string,
-    _password: string,
-  ): Promise<{ success: true }> => {
+  resetPassword: async (_resetToken: string, _password: string): Promise<{ success: true }> => {
     await delay(1000);
     return { success: true };
   },

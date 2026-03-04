@@ -35,12 +35,7 @@ export const useVerifyResetOtp = () => {
 
 export const useResetPassword = () => {
   return useMutation({
-    mutationFn: ({
-      resetToken,
-      password,
-    }: {
-      resetToken: string;
-      password: string;
-    }) => authApi.resetPassword(resetToken, password),
+    mutationFn: ({ resetToken, password }: { resetToken: string; password: string }) =>
+      authApi.resetPassword(resetToken, password),
   });
 };

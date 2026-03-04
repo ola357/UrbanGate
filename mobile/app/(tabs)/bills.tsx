@@ -16,13 +16,10 @@ export default function BillsScreen() {
   const colors = Colors[colorScheme];
   const [activeTab, setActiveTab] = useState<BillStatus>("due");
 
-  const filteredBills = useMemo(
-    () => mockBills.filter((b) => b.status === activeTab),
-    [activeTab],
-  );
+  const filteredBills = useMemo(() => mockBills.filter((b) => b.status === activeTab), [activeTab]);
 
   const handlePay = (billId: string) => {
-    router.push({ pathname: "/bill-payment", params: { billId } } as any);
+    router.push({ pathname: "/bill-payment", params: { billId } });
   };
 
   return (
@@ -30,19 +27,12 @@ export default function BillsScreen() {
       <BillsHeader />
       <BillsTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <View
-        style={[
-          styles.content,
-          { backgroundColor: colors.backgroundSecondary },
-        ]}
-      >
+      <View style={[styles.content, { backgroundColor: colors.backgroundSecondary }]}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {activeTab === "due" && (
-            <CombineBillsBanner onCombine={() => {}} />
-          )}
+          {activeTab === "due" && <CombineBillsBanner onCombine={() => {}} />}
 
           <View style={[styles.listCard, { backgroundColor: colors.card }]}>
             {filteredBills.map((bill, index) => (

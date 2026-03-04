@@ -8,10 +8,7 @@ import { useHomeGreeting } from "@/features/home/hooks/useHomeGreeting";
 import { HomeHeader } from "@/features/home/components/HomeHeader";
 import { QuickActionsCard } from "@/features/home/components/QuickActionsCard";
 import { NotificationBanner } from "@/features/home/components/NotificationBanner";
-import {
-  OverdueBillsSection,
-  type BillItem,
-} from "@/features/home/components/OverdueBillsSection";
+import { OverdueBillsSection, type BillItem } from "@/features/home/components/OverdueBillsSection";
 
 const MOCK_BILLS: BillItem[] = [
   {
@@ -41,11 +38,7 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.backgroundSecondary }}>
-      <HomeHeader
-        firstName={firstName}
-        greeting={greeting}
-        onMailPress={() => {}}
-      />
+      <HomeHeader firstName={firstName} greeting={greeting} onMailPress={() => {}} />
       <ScrollView
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
@@ -54,7 +47,7 @@ export default function HomeScreen() {
           <QuickActionsCard
             onManageHousehold={() => {}}
             onActiveCodes={() => {}}
-            onNewAccessCode={() => router.push('/access-code/select-type')}
+            onNewAccessCode={() => router.push("/access-code/select-type")}
           />
         </View>
 

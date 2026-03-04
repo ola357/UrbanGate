@@ -23,16 +23,9 @@ export default function EstateConfirmationScreen() {
   const insets = useSafeAreaInsets();
 
   return (
-    <View
-      style={[
-        tw`flex-1 px-6`,
-        { backgroundColor: PRIMARY_DARK, paddingTop: insets.top + 40 },
-      ]}
-    >
+    <View style={[tw`flex-1 px-6`, { backgroundColor: PRIMARY_DARK, paddingTop: insets.top + 40 }]}>
       <View style={tw`items-center mb-8`}>
-        <View
-          style={tw`w-20 h-20 rounded-full bg-white/10 items-center justify-center mb-6`}
-        >
+        <View style={tw`w-20 h-20 rounded-full bg-white/10 items-center justify-center mb-6`}>
           <Building2 size={40} color="white" />
         </View>
         <Text style={tw`text-2xl font-bold text-white text-center mb-2`}>
@@ -53,7 +46,7 @@ export default function EstateConfirmationScreen() {
       <View style={[tw`pb-4`, { paddingBottom: insets.bottom + 16 }]}>
         <Button
           fullWidth
-          onPress={() => router.push("./create-password" as any)}
+          onPress={() => router.push("/create-password")}
           style={{ backgroundColor: "#05C756" }}
         >
           Confirm

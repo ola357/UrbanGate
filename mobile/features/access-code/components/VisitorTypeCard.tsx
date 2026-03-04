@@ -1,8 +1,8 @@
-import React from 'react';
-import { TouchableOpacity, View, Text } from 'react-native';
-import { LucideIcon } from 'lucide-react-native';
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
+import React from "react";
+import { TouchableOpacity, View, Text } from "react-native";
+import { LucideIcon } from "lucide-react-native";
+import Colors from "@/constants/Colors";
+import { useColorScheme } from "@/components/useColorScheme";
 
 interface VisitorTypeCardProps {
   selected: boolean;
@@ -13,7 +13,7 @@ interface VisitorTypeCardProps {
 }
 
 export function VisitorTypeCard({ selected, Icon, label, desc, onPress }: VisitorTypeCardProps) {
-  const colorScheme = useColorScheme() ?? 'light';
+  const colorScheme = useColorScheme() ?? "light";
   const colors = Colors[colorScheme];
 
   return (
@@ -29,10 +29,10 @@ export function VisitorTypeCard({ selected, Icon, label, desc, onPress }: Visito
         paddingBottom: selected ? 0 : 14,
       }}
     >
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Icon size={20} color={colors.textTertiary} />
         <View style={{ flex: 1, marginHorizontal: 12 }}>
-          <Text style={{ fontWeight: '700', fontSize: 15, color: colors.text }}>{label}</Text>
+          <Text style={{ fontWeight: "700", fontSize: 15, color: colors.text }}>{label}</Text>
           <Text style={{ fontSize: 13, color: colors.textTertiary, marginTop: 2 }}>{desc}</Text>
         </View>
         <View
@@ -42,8 +42,8 @@ export function VisitorTypeCard({ selected, Icon, label, desc, onPress }: Visito
             borderRadius: 12,
             borderWidth: 2,
             borderColor: selected ? colors.tint : colors.border,
-            alignItems: 'center',
-            justifyContent: 'center',
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           {selected && (

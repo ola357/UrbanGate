@@ -17,22 +17,17 @@ export default function WelcomeScreen() {
 
   const handleContinue = () => {
     if (selectedType === "existing") {
-      router.push("./login" as any);
+      router.push("/login");
     } else {
-      router.push("./activation-code" as any);
+      router.push("/activation-code");
     }
   };
 
   return (
     <View
-      style={[
-        tw`flex-1 px-6`,
-        { backgroundColor: colors.background, paddingTop: insets.top + 40 },
-      ]}
+      style={[tw`flex-1 px-6`, { backgroundColor: colors.background, paddingTop: insets.top + 40 }]}
     >
-      <Text style={[tw`text-3xl font-bold mb-2`, { color: colors.text }]}>
-        Welcome
-      </Text>
+      <Text style={[tw`text-3xl font-bold mb-2`, { color: colors.text }]}>Welcome</Text>
       <Text style={[tw`text-base mb-8`, { color: colors.textTertiary }]}>
         How would you like to get started?
       </Text>

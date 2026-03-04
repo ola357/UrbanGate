@@ -33,7 +33,7 @@ export function AnimatedSplash({ onComplete }: Props) {
     // Phase 2: Full logo fades in (1000–1500ms)
     fullLogoOpacity.value = withDelay(
       1000,
-      withTiming(1, { duration: 500, easing: Easing.out(Easing.ease) })
+      withTiming(1, { duration: 500, easing: Easing.out(Easing.ease) }),
     );
 
     // Phase 3: Entire splash fades out (2200–2700ms), then unmount
@@ -43,8 +43,9 @@ export function AnimatedSplash({ onComplete }: Props) {
         if (finished) {
           runOnJS(onComplete)();
         }
-      })
+      }),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const containerStyle = useAnimatedStyle(() => ({

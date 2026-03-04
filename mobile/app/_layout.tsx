@@ -83,11 +83,7 @@ function RootLayoutNav() {
         <Stack.Screen name="bill-payment" />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>
-      {isAuthenticated ? (
-        <Redirect href="/(tabs)" />
-      ) : (
-        <Redirect href={"/(auth)/welcome" as any} />
-      )}
+      {isAuthenticated ? <Redirect href="/(tabs)" /> : <Redirect href="/(auth)/welcome" />}
       <Toast />
     </ThemeProvider>
   );

@@ -48,28 +48,17 @@ export default function LoginScreen() {
   return (
     <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       {/* Dark green header */}
-      <View
-        style={[
-          tw`px-6 pb-6`,
-          { backgroundColor: PRIMARY_DARK, paddingTop: insets.top + 16 },
-        ]}
-      >
+      <View style={[tw`px-6 pb-6`, { backgroundColor: PRIMARY_DARK, paddingTop: insets.top + 16 }]}>
         <TouchableOpacity onPress={() => router.back()} style={tw`mb-4`}>
           <ChevronLeft size={28} color="white" />
         </TouchableOpacity>
         <Text style={tw`text-3xl font-bold text-white mb-1`}>Log in</Text>
-        <Text style={tw`text-base text-white/60`}>
-          Enter your credentials to continue
-        </Text>
+        <Text style={tw`text-base text-white/60`}>Enter your credentials to continue</Text>
       </View>
 
       {/* Form */}
       <View style={tw`px-6 pt-8 flex-1`}>
-        {error ? (
-          <Text style={[tw`text-sm mb-4`, { color: colors.error }]}>
-            {error}
-          </Text>
-        ) : null}
+        {error ? <Text style={[tw`text-sm mb-4`, { color: colors.error }]}>{error}</Text> : null}
 
         <View style={tw`gap-6`}>
           <Input
@@ -105,13 +94,8 @@ export default function LoginScreen() {
           />
         </View>
 
-        <TouchableOpacity
-          style={tw`mt-4`}
-          onPress={() => router.push("./forgot-password" as any)}
-        >
-          <Text
-            style={[tw`text-sm font-medium underline`, { color: PRIMARY_DARK }]}
-          >
+        <TouchableOpacity style={tw`mt-4`} onPress={() => router.push("/forgot-password")}>
+          <Text style={[tw`text-sm font-medium underline`, { color: PRIMARY_DARK }]}>
             Forgot password?
           </Text>
         </TouchableOpacity>

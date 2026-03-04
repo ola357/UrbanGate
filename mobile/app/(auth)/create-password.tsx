@@ -63,18 +63,13 @@ export default function CreatePasswordScreen() {
 
   return (
     <View
-      style={[
-        tw`flex-1 px-6`,
-        { backgroundColor: colors.background, paddingTop: insets.top + 16 },
-      ]}
+      style={[tw`flex-1 px-6`, { backgroundColor: colors.background, paddingTop: insets.top + 16 }]}
     >
       <TouchableOpacity onPress={() => router.back()} style={tw`mb-6`}>
         <ChevronLeft size={28} color={colors.text} />
       </TouchableOpacity>
 
-      <Text style={[tw`text-3xl font-bold mb-2`, { color: colors.text }]}>
-        Create password
-      </Text>
+      <Text style={[tw`text-3xl font-bold mb-2`, { color: colors.text }]}>Create password</Text>
       <Text style={[tw`text-base mb-8`, { color: colors.textTertiary }]}>
         Set a secure password for your account
       </Text>
@@ -98,8 +93,7 @@ export default function CreatePasswordScreen() {
           value={confirmPassword}
           onChangeText={(text) => {
             setConfirmPassword(text);
-            if (errors.confirmPassword)
-              setErrors((e) => ({ ...e, confirmPassword: undefined }));
+            if (errors.confirmPassword) setErrors((e) => ({ ...e, confirmPassword: undefined }));
           }}
           secureTextEntry={!showConfirm}
           error={errors.confirmPassword}

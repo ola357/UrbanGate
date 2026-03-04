@@ -1,43 +1,36 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-  Platform,
-} from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ChevronLeft, CalendarDays, Check } from 'lucide-react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Buttons';
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
+import React, { useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity, Modal, Platform } from "react-native";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ChevronLeft, CalendarDays, Check } from "lucide-react-native";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Buttons";
+import Colors from "@/constants/Colors";
+import { useColorScheme } from "@/components/useColorScheme";
 
 const TITLE: Record<string, string> = {
-  single: 'Single visitor code',
-  group: 'Group visit code',
-  multiple: 'New multi-pass code',
-  'all-gate': 'All-gate access code',
+  single: "Single visitor code",
+  group: "Group visit code",
+  multiple: "New multi-pass code",
+  "all-gate": "All-gate access code",
 };
 
 const ACCESS_TYPE_LABEL: Record<string, string> = {
-  single: 'Single visitor access',
-  group: 'Group visit access',
-  multiple: 'Multi-pass access',
-  'all-gate': 'All-gate access',
+  single: "Single visitor access",
+  group: "Group visit access",
+  multiple: "Multi-pass access",
+  "all-gate": "All-gate access",
 };
 
-const VISITOR_TYPES = ['Guest', 'Staff', 'Delivery', 'Contractor', 'Other'];
+const VISITOR_TYPES = ["Guest", "Staff", "Delivery", "Contractor", "Other"];
 
 function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-GB', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
+  return date.toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
   });
 }
 
@@ -49,13 +42,15 @@ interface VisitorTypeSelectProps {
 
 function VisitorTypeSelect({ value, onChange, error }: VisitorTypeSelectProps) {
   const [showModal, setShowModal] = useState(false);
-  const colorScheme = useColorScheme() ?? 'light';
+  const colorScheme = useColorScheme() ?? "light";
   const colors = Colors[colorScheme];
 
   return (
     <>
-      <View style={{ width: '100%' }}>
-        <Text style={{ fontSize: 14, fontWeight: '500', color: colors.textSecondary, marginBottom: 8 }}>
+      <View style={{ width: "100%" }}>
+        <Text
+          style={{ fontSize: 14, fontWeight: "500", color: colors.textSecondary, marginBottom: 8 }}
+        >
           Visitor type
         </Text>
         <TouchableOpacity
@@ -65,11 +60,11 @@ function VisitorTypeSelect({ value, onChange, error }: VisitorTypeSelectProps) {
             paddingHorizontal: 0,
             borderBottomWidth: 2,
             borderBottomColor: error ? colors.error : colors.border,
-            justifyContent: 'center',
+            justifyContent: "center",
           }}
         >
           <Text style={{ fontSize: 16, color: value ? colors.text : colors.textTertiary }}>
-            {value || 'Select visitor type'}
+            {value || "Select visitor type"}
           </Text>
         </TouchableOpacity>
         {error ? (
@@ -77,21 +72,26 @@ function VisitorTypeSelect({ value, onChange, error }: VisitorTypeSelectProps) {
         ) : null}
       </View>
 
-      <Modal visible={showModal} transparent animationType="slide" onRequestClose={() => setShowModal(false)}>
+      <Modal
+        visible={showModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowModal(false)}
+      >
         <TouchableOpacity
-          style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}
+          style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.4)" }}
           activeOpacity={1}
           onPress={() => setShowModal(false)}
         />
         <View
           style={{
-            backgroundColor: 'white',
+            backgroundColor: "white",
             borderTopLeftRadius: 16,
             borderTopRightRadius: 16,
             paddingVertical: 16,
           }}
         >
-          <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 24, marginBottom: 8 }}>
+          <Text style={{ fontSize: 16, fontWeight: "700", paddingHorizontal: 24, marginBottom: 8 }}>
             Select visitor type
           </Text>
           {VISITOR_TYPES.map((type) => (
@@ -102,14 +102,14 @@ function VisitorTypeSelect({ value, onChange, error }: VisitorTypeSelectProps) {
                 setShowModal(false);
               }}
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
                 paddingVertical: 16,
                 paddingHorizontal: 24,
               }}
             >
-              <Text style={{ fontSize: 15, color: '#000' }}>{type}</Text>
+              <Text style={{ fontSize: 15, color: "#000" }}>{type}</Text>
               {value === type && <Check size={18} color="#05C756" />}
             </TouchableOpacity>
           ))}
@@ -126,10 +126,10 @@ interface DateFieldProps {
   label?: string;
 }
 
-function DateField({ date, onChange, error, label = 'Date of visit' }: DateFieldProps) {
+function DateField({ date, onChange, error, label = "Date of visit" }: DateFieldProps) {
   const [showPicker, setShowPicker] = useState(false);
   const [tempDate, setTempDate] = useState(new Date());
-  const colorScheme = useColorScheme() ?? 'light';
+  const colorScheme = useColorScheme() ?? "light";
   const colors = Colors[colorScheme];
 
   const handleOpen = () => {
@@ -137,8 +137,8 @@ function DateField({ date, onChange, error, label = 'Date of visit' }: DateField
     setShowPicker(true);
   };
 
-  const handleChange = (_: any, selectedDate?: Date) => {
-    if (Platform.OS === 'android') {
+  const handleChange = (_: DateTimePickerEvent, selectedDate?: Date) => {
+    if (Platform.OS === "android") {
       setShowPicker(false);
       if (selectedDate) onChange(selectedDate);
     } else {
@@ -152,8 +152,10 @@ function DateField({ date, onChange, error, label = 'Date of visit' }: DateField
   };
 
   return (
-    <View style={{ width: '100%' }}>
-      <Text style={{ fontSize: 14, fontWeight: '500', color: colors.textSecondary, marginBottom: 8 }}>
+    <View style={{ width: "100%" }}>
+      <Text
+        style={{ fontSize: 14, fontWeight: "500", color: colors.textSecondary, marginBottom: 8 }}
+      >
         {label}
       </Text>
       <TouchableOpacity
@@ -162,13 +164,13 @@ function DateField({ date, onChange, error, label = 'Date of visit' }: DateField
           height: 48,
           borderBottomWidth: 2,
           borderBottomColor: error ? colors.error : colors.border,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
         <Text style={{ fontSize: 16, color: date ? colors.text : colors.textTertiary }}>
-          {date ? formatDate(date) : 'Select date'}
+          {date ? formatDate(date) : "Select date"}
         </Text>
         <CalendarDays size={20} color={colors.textTertiary} />
       </TouchableOpacity>
@@ -177,17 +179,12 @@ function DateField({ date, onChange, error, label = 'Date of visit' }: DateField
       ) : null}
 
       {/* Android: renders inline native dialog */}
-      {Platform.OS === 'android' && showPicker && (
-        <DateTimePicker
-          value={tempDate}
-          mode="date"
-          display="default"
-          onChange={handleChange}
-        />
+      {Platform.OS === "android" && showPicker && (
+        <DateTimePicker value={tempDate} mode="date" display="default" onChange={handleChange} />
       )}
 
       {/* iOS: Modal with spinner + Done button */}
-      {Platform.OS === 'ios' && (
+      {Platform.OS === "ios" && (
         <Modal
           visible={showPicker}
           transparent
@@ -201,7 +198,7 @@ function DateField({ date, onChange, error, label = 'Date of visit' }: DateField
           />
           <View
             style={{
-              backgroundColor: 'white',
+              backgroundColor: "white",
               borderTopLeftRadius: 16,
               borderTopRightRadius: 16,
               paddingBottom: 24,
@@ -209,9 +206,9 @@ function DateField({ date, onChange, error, label = 'Date of visit' }: DateField
           >
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
                 paddingHorizontal: 20,
                 paddingTop: 16,
                 paddingBottom: 8,
@@ -220,11 +217,9 @@ function DateField({ date, onChange, error, label = 'Date of visit' }: DateField
               <TouchableOpacity onPress={() => setShowPicker(false)}>
                 <Text style={{ fontSize: 16, color: colors.textTertiary }}>Cancel</Text>
               </TouchableOpacity>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: colors.text }}>
-                {label}
-              </Text>
+              <Text style={{ fontSize: 16, fontWeight: "700", color: colors.text }}>{label}</Text>
               <TouchableOpacity onPress={handleDone}>
-                <Text style={{ fontSize: 16, fontWeight: '600', color: '#05C756' }}>Done</Text>
+                <Text style={{ fontSize: 16, fontWeight: "600", color: "#05C756" }}>Done</Text>
               </TouchableOpacity>
             </View>
             <DateTimePicker
@@ -245,48 +240,48 @@ export default function VisitorDetailsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { type } = useLocalSearchParams<{ type: string }>();
-  const colorScheme = useColorScheme() ?? 'light';
+  const colorScheme = useColorScheme() ?? "light";
   const colors = Colors[colorScheme];
 
-  const [visitorName, setVisitorName] = useState('');
-  const [visitorPhone, setVisitorPhone] = useState('');
-  const [visitorType, setVisitorType] = useState('');
+  const [visitorName, setVisitorName] = useState("");
+  const [visitorPhone, setVisitorPhone] = useState("");
+  const [visitorType, setVisitorType] = useState("");
   const [visitDate, setVisitDate] = useState<Date | null>(null);
-  const [purpose, setPurpose] = useState('');
-  const [numberOfGuests, setNumberOfGuests] = useState('');
-  const [groupName, setGroupName] = useState('');
+  const [purpose, setPurpose] = useState("");
+  const [numberOfGuests, setNumberOfGuests] = useState("");
+  const [groupName, setGroupName] = useState("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const title = TITLE[type ?? ''] ?? 'Visitor code';
+  const title = TITLE[type ?? ""] ?? "Visitor code";
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
-    if (type === 'group') {
-      if (!numberOfGuests.trim()) newErrors.numberOfGuests = 'Number of guests is required';
-      if (!groupName.trim()) newErrors.groupName = 'Group name is required';
-      if (!visitDate) newErrors.visitDate = 'Please select a date';
-      if (!purpose.trim()) newErrors.purpose = 'Purpose is required';
-    } else if (type === 'multiple') {
-      if (!visitorName.trim()) newErrors.visitorName = 'Visitor name is required';
-      if (!visitorPhone.trim()) newErrors.visitorPhone = 'Phone number is required';
-      if (!visitorType) newErrors.visitorType = 'Please select a visitor type';
-      if (!startDate) newErrors.startDate = 'Please select a start date';
-      if (!endDate) newErrors.endDate = 'Please select an end date';
-    } else if (type === 'all-gate') {
-      if (!visitorName.trim()) newErrors.visitorName = 'Visitor name is required';
-      if (!visitorPhone.trim()) newErrors.visitorPhone = 'Phone number is required';
-      if (!visitDate) newErrors.visitDate = 'Please select a date';
-      if (!visitorType) newErrors.visitorType = 'Please select a visitor type';
+    if (type === "group") {
+      if (!numberOfGuests.trim()) newErrors.numberOfGuests = "Number of guests is required";
+      if (!groupName.trim()) newErrors.groupName = "Group name is required";
+      if (!visitDate) newErrors.visitDate = "Please select a date";
+      if (!purpose.trim()) newErrors.purpose = "Purpose is required";
+    } else if (type === "multiple") {
+      if (!visitorName.trim()) newErrors.visitorName = "Visitor name is required";
+      if (!visitorPhone.trim()) newErrors.visitorPhone = "Phone number is required";
+      if (!visitorType) newErrors.visitorType = "Please select a visitor type";
+      if (!startDate) newErrors.startDate = "Please select a start date";
+      if (!endDate) newErrors.endDate = "Please select an end date";
+    } else if (type === "all-gate") {
+      if (!visitorName.trim()) newErrors.visitorName = "Visitor name is required";
+      if (!visitorPhone.trim()) newErrors.visitorPhone = "Phone number is required";
+      if (!visitDate) newErrors.visitDate = "Please select a date";
+      if (!visitorType) newErrors.visitorType = "Please select a visitor type";
     } else {
-      if (!visitorName.trim()) newErrors.visitorName = 'Visitor name is required';
-      if (!visitorPhone.trim()) newErrors.visitorPhone = 'Phone number is required';
-      if (!visitorType) newErrors.visitorType = 'Please select a visitor type';
-      if (!visitDate) newErrors.visitDate = 'Please select a date';
-      if (!purpose.trim()) newErrors.purpose = 'Purpose is required';
+      if (!visitorName.trim()) newErrors.visitorName = "Visitor name is required";
+      if (!visitorPhone.trim()) newErrors.visitorPhone = "Phone number is required";
+      if (!visitorType) newErrors.visitorType = "Please select a visitor type";
+      if (!visitDate) newErrors.visitDate = "Please select a date";
+      if (!purpose.trim()) newErrors.purpose = "Purpose is required";
     }
 
     setErrors(newErrors);
@@ -298,15 +293,16 @@ export default function VisitorDetailsScreen() {
 
     const code = [3, 2, 1]
       .map(() => Math.random().toString(36).substring(2, 4).toUpperCase())
-      .join(' ');
+      .join(" ");
     const now = new Date().toISOString();
-    const validUntil = type === 'multiple' ? endDate?.toISOString() ?? now : visitDate?.toISOString() ?? now;
+    const validUntil =
+      type === "multiple" ? (endDate?.toISOString() ?? now) : (visitDate?.toISOString() ?? now);
     router.push({
-      pathname: '/access-code/code-generated',
+      pathname: "/access-code/code-generated",
       params: {
         code,
         type,
-        accessType: ACCESS_TYPE_LABEL[type ?? ''] ?? type,
+        accessType: ACCESS_TYPE_LABEL[type ?? ""] ?? type,
         created: now,
         validUntil,
       },
@@ -321,8 +317,8 @@ export default function VisitorDetailsScreen() {
           paddingTop: insets.top + 12,
           paddingHorizontal: 16,
           paddingBottom: 12,
-          flexDirection: 'row',
-          alignItems: 'center',
+          flexDirection: "row",
+          alignItems: "center",
           backgroundColor: colors.background,
         }}
       >
@@ -332,9 +328,9 @@ export default function VisitorDetailsScreen() {
         <Text
           style={{
             flex: 1,
-            textAlign: 'center',
+            textAlign: "center",
             color: colors.text,
-            fontWeight: '700',
+            fontWeight: "700",
             fontSize: 18,
           }}
         >
@@ -345,12 +341,17 @@ export default function VisitorDetailsScreen() {
 
       {/* Body */}
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 24, paddingBottom: 24, gap: 24 }}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingTop: 24,
+          paddingBottom: 24,
+          gap: 24,
+        }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
         {/* GROUP */}
-        {type === 'group' && (
+        {type === "group" && (
           <>
             <Input
               variant="underlined"
@@ -360,7 +361,7 @@ export default function VisitorDetailsScreen() {
               value={numberOfGuests}
               onChangeText={(v) => {
                 setNumberOfGuests(v);
-                if (errors.numberOfGuests) setErrors((e) => ({ ...e, numberOfGuests: '' }));
+                if (errors.numberOfGuests) setErrors((e) => ({ ...e, numberOfGuests: "" }));
               }}
               error={errors.numberOfGuests}
             />
@@ -371,7 +372,7 @@ export default function VisitorDetailsScreen() {
               value={groupName}
               onChangeText={(v) => {
                 setGroupName(v);
-                if (errors.groupName) setErrors((e) => ({ ...e, groupName: '' }));
+                if (errors.groupName) setErrors((e) => ({ ...e, groupName: "" }));
               }}
               error={errors.groupName}
             />
@@ -379,7 +380,7 @@ export default function VisitorDetailsScreen() {
               date={visitDate}
               onChange={(d) => {
                 setVisitDate(d);
-                if (errors.visitDate) setErrors((e) => ({ ...e, visitDate: '' }));
+                if (errors.visitDate) setErrors((e) => ({ ...e, visitDate: "" }));
               }}
               error={errors.visitDate}
             />
@@ -390,7 +391,7 @@ export default function VisitorDetailsScreen() {
               value={purpose}
               onChangeText={(v) => {
                 setPurpose(v);
-                if (errors.purpose) setErrors((e) => ({ ...e, purpose: '' }));
+                if (errors.purpose) setErrors((e) => ({ ...e, purpose: "" }));
               }}
               error={errors.purpose}
             />
@@ -398,7 +399,7 @@ export default function VisitorDetailsScreen() {
         )}
 
         {/* MULTI-PASS */}
-        {type === 'multiple' && (
+        {type === "multiple" && (
           <>
             <Input
               variant="underlined"
@@ -407,7 +408,7 @@ export default function VisitorDetailsScreen() {
               value={visitorName}
               onChangeText={(v) => {
                 setVisitorName(v);
-                if (errors.visitorName) setErrors((e) => ({ ...e, visitorName: '' }));
+                if (errors.visitorName) setErrors((e) => ({ ...e, visitorName: "" }));
               }}
               error={errors.visitorName}
             />
@@ -419,7 +420,7 @@ export default function VisitorDetailsScreen() {
               value={visitorPhone}
               onChangeText={(v) => {
                 setVisitorPhone(v);
-                if (errors.visitorPhone) setErrors((e) => ({ ...e, visitorPhone: '' }));
+                if (errors.visitorPhone) setErrors((e) => ({ ...e, visitorPhone: "" }));
               }}
               error={errors.visitorPhone}
             />
@@ -427,7 +428,7 @@ export default function VisitorDetailsScreen() {
               value={visitorType}
               onChange={(v) => {
                 setVisitorType(v);
-                if (errors.visitorType) setErrors((e) => ({ ...e, visitorType: '' }));
+                if (errors.visitorType) setErrors((e) => ({ ...e, visitorType: "" }));
               }}
               error={errors.visitorType}
             />
@@ -436,7 +437,7 @@ export default function VisitorDetailsScreen() {
               date={startDate}
               onChange={(d) => {
                 setStartDate(d);
-                if (errors.startDate) setErrors((e) => ({ ...e, startDate: '' }));
+                if (errors.startDate) setErrors((e) => ({ ...e, startDate: "" }));
               }}
               error={errors.startDate}
             />
@@ -445,7 +446,7 @@ export default function VisitorDetailsScreen() {
               date={endDate}
               onChange={(d) => {
                 setEndDate(d);
-                if (errors.endDate) setErrors((e) => ({ ...e, endDate: '' }));
+                if (errors.endDate) setErrors((e) => ({ ...e, endDate: "" }));
               }}
               error={errors.endDate}
             />
@@ -453,7 +454,7 @@ export default function VisitorDetailsScreen() {
         )}
 
         {/* ALL-GATE */}
-        {type === 'all-gate' && (
+        {type === "all-gate" && (
           <>
             <Input
               variant="underlined"
@@ -462,7 +463,7 @@ export default function VisitorDetailsScreen() {
               value={visitorName}
               onChangeText={(v) => {
                 setVisitorName(v);
-                if (errors.visitorName) setErrors((e) => ({ ...e, visitorName: '' }));
+                if (errors.visitorName) setErrors((e) => ({ ...e, visitorName: "" }));
               }}
               error={errors.visitorName}
             />
@@ -474,7 +475,7 @@ export default function VisitorDetailsScreen() {
               value={visitorPhone}
               onChangeText={(v) => {
                 setVisitorPhone(v);
-                if (errors.visitorPhone) setErrors((e) => ({ ...e, visitorPhone: '' }));
+                if (errors.visitorPhone) setErrors((e) => ({ ...e, visitorPhone: "" }));
               }}
               error={errors.visitorPhone}
             />
@@ -482,7 +483,7 @@ export default function VisitorDetailsScreen() {
               date={visitDate}
               onChange={(d) => {
                 setVisitDate(d);
-                if (errors.visitDate) setErrors((e) => ({ ...e, visitDate: '' }));
+                if (errors.visitDate) setErrors((e) => ({ ...e, visitDate: "" }));
               }}
               error={errors.visitDate}
             />
@@ -490,7 +491,7 @@ export default function VisitorDetailsScreen() {
               value={visitorType}
               onChange={(v) => {
                 setVisitorType(v);
-                if (errors.visitorType) setErrors((e) => ({ ...e, visitorType: '' }));
+                if (errors.visitorType) setErrors((e) => ({ ...e, visitorType: "" }));
               }}
               error={errors.visitorType}
             />
@@ -498,7 +499,7 @@ export default function VisitorDetailsScreen() {
         )}
 
         {/* SINGLE (default) */}
-        {(type === 'single' || !type) && (
+        {(type === "single" || !type) && (
           <>
             <Input
               variant="underlined"
@@ -507,7 +508,7 @@ export default function VisitorDetailsScreen() {
               value={visitorName}
               onChangeText={(v) => {
                 setVisitorName(v);
-                if (errors.visitorName) setErrors((e) => ({ ...e, visitorName: '' }));
+                if (errors.visitorName) setErrors((e) => ({ ...e, visitorName: "" }));
               }}
               error={errors.visitorName}
             />
@@ -519,7 +520,7 @@ export default function VisitorDetailsScreen() {
               value={visitorPhone}
               onChangeText={(v) => {
                 setVisitorPhone(v);
-                if (errors.visitorPhone) setErrors((e) => ({ ...e, visitorPhone: '' }));
+                if (errors.visitorPhone) setErrors((e) => ({ ...e, visitorPhone: "" }));
               }}
               error={errors.visitorPhone}
             />
@@ -527,7 +528,7 @@ export default function VisitorDetailsScreen() {
               value={visitorType}
               onChange={(v) => {
                 setVisitorType(v);
-                if (errors.visitorType) setErrors((e) => ({ ...e, visitorType: '' }));
+                if (errors.visitorType) setErrors((e) => ({ ...e, visitorType: "" }));
               }}
               error={errors.visitorType}
             />
@@ -535,7 +536,7 @@ export default function VisitorDetailsScreen() {
               date={visitDate}
               onChange={(d) => {
                 setVisitDate(d);
-                if (errors.visitDate) setErrors((e) => ({ ...e, visitDate: '' }));
+                if (errors.visitDate) setErrors((e) => ({ ...e, visitDate: "" }));
               }}
               error={errors.visitDate}
             />
@@ -546,7 +547,7 @@ export default function VisitorDetailsScreen() {
               value={purpose}
               onChangeText={(v) => {
                 setPurpose(v);
-                if (errors.purpose) setErrors((e) => ({ ...e, purpose: '' }));
+                if (errors.purpose) setErrors((e) => ({ ...e, purpose: "" }));
               }}
               error={errors.purpose}
             />

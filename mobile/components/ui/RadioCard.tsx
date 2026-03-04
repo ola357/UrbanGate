@@ -29,12 +29,8 @@ export const RadioCard = ({ selected, title, description, onPress }: RadioCardPr
       ]}
     >
       <View style={tw`flex-1 mr-4`}>
-        <Text style={[tw`text-base font-semibold mb-1`, { color: colors.text }]}>
-          {title}
-        </Text>
-        <Text style={[tw`text-sm`, { color: colors.textTertiary }]}>
-          {description}
-        </Text>
+        <Text style={[tw`text-base font-semibold mb-1`, { color: colors.text }]}>{title}</Text>
+        <Text style={[tw`text-sm`, { color: colors.textTertiary }]}>{description}</Text>
       </View>
       <View
         style={[
@@ -45,12 +41,7 @@ export const RadioCard = ({ selected, title, description, onPress }: RadioCardPr
         ]}
       >
         {selected && (
-          <View
-            style={[
-              tw`w-3.5 h-3.5 rounded-full`,
-              { backgroundColor: colors.tint },
-            ]}
-          />
+          <View style={[tw`w-3.5 h-3.5 rounded-full`, { backgroundColor: colors.tint }]} />
         )}
       </View>
     </TouchableOpacity>

@@ -34,11 +34,7 @@ export function QuickActionsCard({
     <Card variant="elevated" padding="none" style={styles.card}>
       {actions.map((action, index) => (
         <React.Fragment key={action.key}>
-          <TouchableOpacity
-            style={styles.row}
-            onPress={handlers[action.key]}
-            activeOpacity={0.7}
-          >
+          <TouchableOpacity style={styles.row} onPress={handlers[action.key]} activeOpacity={0.7}>
             <View style={styles.iconContainer}>
               <action.Icon size={18} color={PRIMARY_DARK} />
             </View>
