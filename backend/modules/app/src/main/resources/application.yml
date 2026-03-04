@@ -64,7 +64,7 @@ management:
 
 keycloak:
   url: ${KEYCLOAK_URL:http://localhost:8088}
-  admin-client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:admin-cli}
+  admin-client-id: ${KEYCLOAK_ADMIN_CLIENT_ID}
   admin-password: ug-admin_password
   admin-username: admin
   public-client-id: mobile-app
@@ -82,6 +82,9 @@ scheduler:
 app:
   redis:
     default-ttl: 4000
+
+activation-code:
+  ttl-in-hours: 12
 
 urbangate:
   env: dev

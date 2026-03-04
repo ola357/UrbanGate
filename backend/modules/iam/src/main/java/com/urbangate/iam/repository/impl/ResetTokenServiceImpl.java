@@ -19,9 +19,9 @@ public class ResetTokenServiceImpl implements BaseRedisRepository<String, String
 
   public ResetTokenServiceImpl(
       RedisTemplate<String, Object> redisTemplate,
-      @Value("${app.redis.default-ttl-password-resets:15}") long defaultTtlSeconds) {
+      @Value("${app.redis.default-ttl-password-resets:15}") long defaultTtl) {
     this.redisTemplate = redisTemplate;
-    this.defaultTtl = Duration.ofMinutes(defaultTtlSeconds);
+    this.defaultTtl = Duration.ofMinutes(defaultTtl);
   }
 
   @Override
@@ -50,7 +50,6 @@ public class ResetTokenServiceImpl implements BaseRedisRepository<String, String
         .anyMatch(
             result -> {
               log.info("Validate email={}", email);
-              log.info("Validate result={}", result);
               return result.equals(code);
             });
   }

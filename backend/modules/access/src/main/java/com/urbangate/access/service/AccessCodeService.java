@@ -77,6 +77,7 @@ public class AccessCodeService {
       visitor.setName(accessCodeRequest.visitorName());
       visitor.setPhone(accessCodeRequest.visitorPhone());
       visitor.setEmail(accessCodeRequest.visitorEmail());
+      visitor.setVisitorType(accessCodeRequest.visitorType());
       visitorRepository.insert(visitor);
 
       accessCodeRedis.save(accessCode);
@@ -126,6 +127,9 @@ public class AccessCodeService {
     AccessCode code = getAccessCodeCheckRedisFirst(accessCode);
     boolean isRevoked = accessCodeRepository.revokeCode(code.getCode());
     if (isRevoked) {
+      accessCodeRedis.evict(accessCode);
+      AccessCode updatedAccessCode = getAccessCode(accessCode);
+      accessCodeRedis.save(updatedAccessCode);
       return "Successfully revoked access code";
     }
     throw new IllegalArgumentException("Access code not revoked");

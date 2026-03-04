@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS activation_codes;
-
 CREATE TABLE IF NOT EXISTS activation_codes (
 
     id BIGSERIAL PRIMARY KEY,

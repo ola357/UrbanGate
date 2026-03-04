@@ -12,7 +12,6 @@ import lombok.ToString;
 @ToString
 public class TenantConfiguration extends BaseEntity {
 
-  private Long id;
   private String name; // configurable
   private String description;
   private String icon;

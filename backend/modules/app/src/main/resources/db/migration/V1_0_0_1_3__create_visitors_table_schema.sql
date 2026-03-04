@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS visitors;
 CREATE TABLE IF NOT EXISTS visitors (
     name  TEXT NOT NULL,
     access_code  TEXT NOT NULL,

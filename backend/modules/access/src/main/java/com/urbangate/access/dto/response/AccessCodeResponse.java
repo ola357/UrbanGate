@@ -10,6 +10,6 @@ public record AccessCodeResponse(
     String accessCode,
     Timestamp expirationDate,
     AccessType accessType,
-    Timestamp createdAt,
+    Timestamp startFromTime,
     boolean active,
     String visitorName) {}

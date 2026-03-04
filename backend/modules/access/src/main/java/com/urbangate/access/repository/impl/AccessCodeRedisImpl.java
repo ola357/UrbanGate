@@ -22,9 +22,9 @@ public class AccessCodeRedisImpl implements BaseRedisRepository<AccessCode, Stri
 
   public AccessCodeRedisImpl(
       RedisTemplate<String, Object> redisTemplate,
-      @Value("${app.redis.default-ttl:3600}") long defaultTtlSeconds) {
+      @Value("${app.redis.default-ttl:3600}") long defaultTtl) {
     this.redisTemplate = redisTemplate;
-    this.defaultTtl = Duration.ofMinutes(defaultTtlSeconds);
+    this.defaultTtl = Duration.ofMinutes(defaultTtl);
   }
 
   private String key(String code) {

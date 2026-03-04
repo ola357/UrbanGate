@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS tenant_configurations CASCADE;
 CREATE TABLE IF NOT EXISTS tenant_configurations (
 
     id BIGSERIAL PRIMARY KEY,

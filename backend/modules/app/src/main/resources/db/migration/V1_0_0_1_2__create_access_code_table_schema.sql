@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS access_codes;
-
 CREATE TABLE IF NOT EXISTS access_codes (
                                             id BIGSERIAL PRIMARY KEY,
                                             code TEXT NOT NULL,

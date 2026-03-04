@@ -99,7 +99,6 @@ class AccessCodeControllerTest {
   class CreateAccessCode {
 
     @Test
-    @DisplayName("happy path — RESIDENT creates access code → 200 with response body")
     void shouldCreateAccessCodeSuccessfully() throws Exception {
       Mockito.when(accessCodeService.createAccessCode(any(), any(), any()))
           .thenReturn(accessCodeResponse);
@@ -118,7 +117,6 @@ class AccessCodeControllerTest {
     }
 
     @Test
-    @DisplayName("failure — service throws RuntimeException → 500")
     void shouldReturn500WhenServiceFails() throws Exception {
       Mockito.when(accessCodeService.createAccessCode(any(), any(), any()))
           .thenThrow(new RuntimeException("DB unavailable"));
@@ -133,7 +131,6 @@ class AccessCodeControllerTest {
     }
 
     @Test
-    @DisplayName("failure — no RESIDENT role → 403")
     void shouldReturn403WhenUnauthorized() throws Exception {
       mockMvc
           .perform(
@@ -152,7 +149,6 @@ class AccessCodeControllerTest {
   class ExtendExpiration {
 
     @Test
-    @DisplayName("happy path — active code expiry extended → 200 with message")
     void shouldExtendExpirationSuccessfully() throws Exception {
       Mockito.when(accessCodeService.extendExpirationTimeForAccessCode(any(), any()))
           .thenReturn("Successfully updated access code");
@@ -167,7 +163,6 @@ class AccessCodeControllerTest {
     }
 
     @Test
-    @DisplayName("failure — code not found → 500")
     void shouldReturn500WhenCodeNotFound() throws Exception {
       Mockito.when(accessCodeService.extendExpirationTimeForAccessCode(any(), any()))
           .thenThrow(new IllegalArgumentException("Access code not found"));
@@ -181,7 +176,6 @@ class AccessCodeControllerTest {
     }
 
     @Test
-    @DisplayName("failure — no RESIDENT role → 403")
     void shouldReturn403WhenUnauthorized() throws Exception {
       mockMvc
           .perform(
@@ -197,7 +191,6 @@ class AccessCodeControllerTest {
   class RevokeAccessCode {
 
     @Test
-    @DisplayName("happy path — code revoked successfully → 200 with message")
     void shouldRevokeAccessCodeSuccessfully() throws Exception {
       Mockito.when(accessCodeService.revokeAccessCode("ABC123"))
           .thenReturn("Successfully revoked access code");
@@ -209,7 +202,6 @@ class AccessCodeControllerTest {
     }
 
     @Test
-    @DisplayName("failure — revoke fails → 500")
     void shouldReturn500WhenRevokeFails() throws Exception {
       Mockito.when(accessCodeService.revokeAccessCode(any()))
           .thenThrow(new IllegalArgumentException("Access code not revoked"));
@@ -220,7 +212,6 @@ class AccessCodeControllerTest {
     }
 
     @Test
-    @DisplayName("failure — no RESIDENT role → 403")
     void shouldReturn403WhenUnauthorized() throws Exception {
       mockMvc
           .perform(patch("/api/v1/access/ABC123/revoke").with(unauthorizedJwt))
@@ -235,7 +226,6 @@ class AccessCodeControllerTest {
   class GetAccessCodes {
 
     @Test
-    @DisplayName("happy path — returns list of access codes → 200")
     void shouldReturnAccessCodesSuccessfully() throws Exception {
       Mockito.when(accessCodeService.getAccessCodesByUser(any()))
           .thenReturn(List.of(accessCodeResponse));
@@ -249,7 +239,6 @@ class AccessCodeControllerTest {
     }
 
     @Test
-    @DisplayName("happy path — no codes found → 200 with empty list")
     void shouldReturnEmptyListSuccessfully() throws Exception {
       Mockito.when(accessCodeService.getAccessCodesByUser(any())).thenReturn(List.of());
 
@@ -261,7 +250,6 @@ class AccessCodeControllerTest {
     }
 
     @Test
-    @DisplayName("failure — service throws → 500")
     void shouldReturn500WhenServiceFails() throws Exception {
       Mockito.when(accessCodeService.getAccessCodesByUser(any()))
           .thenThrow(new RuntimeException("Unexpected error"));
@@ -272,7 +260,6 @@ class AccessCodeControllerTest {
     }
 
     @Test
-    @DisplayName("failure — No resident")
     void shouldReturn403WhenUnauthorized() throws Exception {
       mockMvc
           .perform(get("/api/v1/access/codes").with(unauthorizedJwt))

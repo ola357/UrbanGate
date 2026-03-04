@@ -51,8 +51,8 @@ public class OpenApiConfig {
                             new OAuthFlows()
                                 .password(
                                     new OAuthFlow()
-                                        .tokenUrl("api/v1/auth" + "/login")
-                                        .refreshUrl("api/v1/auth/login" + "/refresh")
+                                        .tokenUrl("/api/v1/auth" + "/login")
+                                        .refreshUrl("/api/v1/auth/" + "/refresh")
                                         .scopes(
                                             new Scopes()
                                                 .addString("openid", "OpenID Connect")

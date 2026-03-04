@@ -49,8 +49,8 @@ public class KeycloakUserService {
   private final EmailService emailService;
   private static final SecureRandom RANDOM = new SecureRandom();
 
-  @Value("${activation-code.ttl-in-minutes:5}")
-  private int activationCodeTtlInMinutes;
+  @Value("${activation-code.ttl-in-hours:5}")
+  private int activationCodeTtlInHours;
 
   @Transactional
   public ResidentOnboardingResponse register(
@@ -112,7 +112,7 @@ public class KeycloakUserService {
 
   private String saveActivationCode(String userId, HttpServletRequest httpServletRequest) {
     ActivationCode activationCode = new ActivationCode();
-    activationCode.setTtlInHours(activationCodeTtlInMinutes);
+    activationCode.setTtlInHours(activationCodeTtlInHours);
     activationCode.setUserId(userId);
 
     String token = generateActivationCode(httpServletRequest);
