@@ -30,6 +30,11 @@ Variables are set in `eas.json` per build profile:
 
 Replace the placeholder URLs in `eas.json` with real endpoints.
 
+Non-interactive EAS builds require credentials to already exist in Expo.
+If builds fail with "Generating a new Keystore is not supported in --non-interactive mode",
+run `eas credentials -p android` locally once to generate or upload a keystore.
+Do the same for iOS if you plan to build iOS in CI.
+
 ## OTA updates (later)
 When enabling EAS Update:
 - dev channel → internal testers
