@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 10.0.0"
+    "version": ">= 10.0.0",
+    "appVersionSource": "local"
   },
   "build": {
     "dev": {
@@ -9,7 +10,7 @@
       "channel": "dev",
       "env": {
         "EXPO_PUBLIC_APP_ENV": "dev",
-        "EXPO_PUBLIC_API_BASE_URL": "http://10.0.2.2:8080"
+        "EXPO_PUBLIC_API_BASE_URL": "https://urbangate-dev-backend.wonderfulpond-450a1217.westeurope.azurecontainerapps.io"
       }
     },
     "staging": {
@@ -25,7 +26,7 @@
       "channel": "prod",
       "env": {
         "EXPO_PUBLIC_APP_ENV": "prod",
-        "EXPO_PUBLIC_API_BASE_URL": "https://api.urbangate.example"
+        "EXPO_PUBLIC_API_BASE_URL": "https://urbangate-dev-backend.wonderfulpond-450a1217.westeurope.azurecontainerapps.io"
       }
     }
   },

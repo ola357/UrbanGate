@@ -26,3 +26,10 @@ gradle-app.setting
 node_modules/
 **/node_modules/
 **/dist
+
+# Terraform
+**/.terraform/
+**/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
