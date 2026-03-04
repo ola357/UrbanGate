@@ -19,9 +19,7 @@ export function CombineBillsBanner({ onCombine }: CombineBillsBannerProps) {
         You can combine your due bills and{"\n"}pay them at once
       </Text>
       <TouchableOpacity onPress={onCombine} style={styles.button}>
-        <Text style={[styles.buttonText, { color: colors.tint }]}>
-          Combine
-        </Text>
+        <Text style={[styles.buttonText, { color: colors.tint }]}>Combine</Text>
       </TouchableOpacity>
     </View>
   );

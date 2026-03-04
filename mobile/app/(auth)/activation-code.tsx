@@ -32,7 +32,7 @@ export default function ActivationCodeScreen() {
     mutation.mutate(code, {
       onSuccess: (userData) => {
         setUser(userData);
-        router.push("./estate-confirmation" as any);
+        router.push("/estate-confirmation");
       },
       onError: (err) => {
         setError(err.message);
@@ -42,10 +42,7 @@ export default function ActivationCodeScreen() {
 
   return (
     <View
-      style={[
-        tw`flex-1 px-6`,
-        { backgroundColor: colors.background, paddingTop: insets.top + 16 },
-      ]}
+      style={[tw`flex-1 px-6`, { backgroundColor: colors.background, paddingTop: insets.top + 16 }]}
     >
       <TouchableOpacity onPress={() => router.back()} style={tw`mb-6`}>
         <ChevronLeft size={28} color={colors.text} />

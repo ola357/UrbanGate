@@ -11,12 +11,7 @@ interface OtpInputProps {
   error?: string;
 }
 
-export function OtpInput({
-  length = 6,
-  value,
-  onChangeText,
-  error,
-}: OtpInputProps) {
+export function OtpInput({ length = 6, value, onChangeText, error }: OtpInputProps) {
   const colorScheme = useColorScheme() ?? "light";
   const colors = Colors[colorScheme];
   const refs = useRef<(TextInput | null)[]>([]);
@@ -33,10 +28,7 @@ export function OtpInput({
     }
   };
 
-  const handleKeyPress = (
-    e: { nativeEvent: { key: string } },
-    index: number,
-  ) => {
+  const handleKeyPress = (e: { nativeEvent: { key: string } }, index: number) => {
     if (e.nativeEvent.key === "Backspace" && !digits[index] && index > 0) {
       refs.current[index - 1]?.focus();
       const newValue = digits.map((d, i) => (i === index - 1 ? "" : d)).join("");
@@ -47,7 +39,8 @@ export function OtpInput({
   return (
     <View style={tw`flex-row justify-between`}>
       {Array.from({ length }).map((_, index) => {
-        const isFocusable = index === value.length || (index === length - 1 && value.length >= length);
+        const isFocusable =
+          index === value.length || (index === length - 1 && value.length >= length);
         return (
           <TextInput
             key={index}

@@ -24,15 +24,14 @@ export function BillsTabs({ activeTab, onTabChange }: BillsTabsProps) {
 
   const activeIndex = BILL_TABS.findIndex((t) => t.key === activeTab);
 
-  const translateX = useSharedValue(
-    activeIndex * tabWidth + (tabWidth - indicatorWidth) / 2,
-  );
+  const translateX = useSharedValue(activeIndex * tabWidth + (tabWidth - indicatorWidth) / 2);
 
   useEffect(() => {
-    translateX.value = withTiming(
-      activeIndex * tabWidth + (tabWidth - indicatorWidth) / 2,
-      { duration: 250, easing: Easing.out(Easing.cubic) },
-    );
+    translateX.value = withTiming(activeIndex * tabWidth + (tabWidth - indicatorWidth) / 2, {
+      duration: 250,
+      easing: Easing.out(Easing.cubic),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeIndex, tabWidth, indicatorWidth]);
 
   const indicatorStyle = useAnimatedStyle(() => ({
@@ -45,11 +44,7 @@ export function BillsTabs({ activeTab, onTabChange }: BillsTabsProps) {
         {BILL_TABS.map((tab) => {
           const isActive = activeTab === tab.key;
           return (
-            <Pressable
-              key={tab.key}
-              style={styles.tab}
-              onPress={() => onTabChange(tab.key)}
-            >
+            <Pressable key={tab.key} style={styles.tab} onPress={() => onTabChange(tab.key)}>
               <Animated.Text
                 style={[
                   styles.label,
@@ -63,13 +58,7 @@ export function BillsTabs({ activeTab, onTabChange }: BillsTabsProps) {
           );
         })}
       </View>
-      <Animated.View
-        style={[
-          styles.indicator,
-          { width: indicatorWidth },
-          indicatorStyle,
-        ]}
-      />
+      <Animated.View style={[styles.indicator, { width: indicatorWidth }, indicatorStyle]} />
     </View>
   );
 }

@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  TouchableOpacity,
-  TouchableOpacityProps,
-  View,
-  ViewProps,
-} from "react-native";
+import { TouchableOpacity, TouchableOpacityProps, View, ViewProps } from "react-native";
 import tw from "twrnc";
 
 export type CardVariant = "elevated" | "outlined" | "filled";
@@ -71,11 +66,7 @@ export const Card = ({
   if (pressable) {
     const { pressable: _, ...touchableProps } = props as PressableCardProps;
     return (
-      <TouchableOpacity
-        style={baseStyles}
-        activeOpacity={0.7}
-        {...touchableProps}
-      >
+      <TouchableOpacity style={baseStyles} activeOpacity={0.7} {...touchableProps}>
         {children}
       </TouchableOpacity>
     );

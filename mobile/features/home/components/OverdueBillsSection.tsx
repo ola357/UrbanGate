@@ -19,11 +19,7 @@ interface OverdueBillsSectionProps {
   onPay: (id: string) => void;
 }
 
-export function OverdueBillsSection({
-  bills,
-  onSeeAll,
-  onPay,
-}: OverdueBillsSectionProps) {
+export function OverdueBillsSection({ bills, onSeeAll, onPay }: OverdueBillsSectionProps) {
   const colorScheme = useColorScheme() ?? "light";
   const colors = Colors[colorScheme];
 
@@ -33,44 +29,30 @@ export function OverdueBillsSection({
   return (
     <View>
       <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>
-          Overdue bills
-        </Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Overdue bills</Text>
         <TouchableOpacity onPress={onSeeAll}>
-          <Text style={[styles.seeAll, { color: colors.tint }]}>
-            See all bills
-          </Text>
+          <Text style={[styles.seeAll, { color: colors.tint }]}>See all bills</Text>
         </TouchableOpacity>
       </View>
 
       {bills.map((bill, index) => (
         <React.Fragment key={bill.id}>
           <View style={styles.row}>
-            <View
-              style={[styles.billIcon, { backgroundColor: bill.iconColor }]}
-            >
+            <View style={[styles.billIcon, { backgroundColor: bill.iconColor }]}>
               <Text style={styles.billIconText}>{bill.iconLetter}</Text>
             </View>
             <View style={styles.billInfo}>
-              <Text style={[styles.billName, { color: colors.text }]}>
-                {bill.name}
-              </Text>
+              <Text style={[styles.billName, { color: colors.text }]}>{bill.name}</Text>
               <Text style={[styles.billMeta, { color: colors.textTertiary }]}>
                 {formatAmount(bill.amount)} · {bill.dueDate}
               </Text>
             </View>
-            <Button
-              variant="outline"
-              size="sm"
-              onPress={() => onPay(bill.id)}
-            >
+            <Button variant="outline" size="sm" onPress={() => onPay(bill.id)}>
               Pay
             </Button>
           </View>
           {index < bills.length - 1 && (
-            <View
-              style={[styles.separator, { backgroundColor: colors.border }]}
-            />
+            <View style={[styles.separator, { backgroundColor: colors.border }]} />
           )}
         </React.Fragment>
       ))}

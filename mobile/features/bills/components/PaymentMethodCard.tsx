@@ -38,9 +38,7 @@ export function PaymentMethodCard({
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Icon size={20} color={colors.textTertiary} />
         <View style={{ flex: 1, marginHorizontal: 12 }}>
-          <Text style={{ fontWeight: "700", fontSize: 15, color: colors.text }}>
-            {label}
-          </Text>
+          <Text style={{ fontWeight: "700", fontSize: 15, color: colors.text }}>{label}</Text>
           <Text
             style={{
               fontSize: 13,

@@ -1,11 +1,5 @@
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import {
-  CalendarDays,
-  ClipboardList,
-  Grip,
-  House,
-  Wallet,
-} from "lucide-react-native";
+import { CalendarDays, ClipboardList, Grip, House, Wallet } from "lucide-react-native";
 import React, { useEffect } from "react";
 import { Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import Animated, {
@@ -30,11 +24,7 @@ const ICON_MAP: Record<string, typeof House> = {
 
 const INDICATOR_HEIGHT = 3;
 
-export default function CustomTabBar({
-  state,
-  descriptors,
-  navigation,
-}: BottomTabBarProps) {
+export default function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const colorScheme = useColorScheme() ?? "light";
   const colors = Colors[colorScheme];
   const insets = useSafeAreaInsets();
@@ -44,15 +34,14 @@ export default function CustomTabBar({
   const tabWidth = screenWidth / tabCount;
   const indicatorWidth = tabWidth * 0.5;
 
-  const translateX = useSharedValue(
-    state.index * tabWidth + (tabWidth - indicatorWidth) / 2,
-  );
+  const translateX = useSharedValue(state.index * tabWidth + (tabWidth - indicatorWidth) / 2);
 
   useEffect(() => {
-    translateX.value = withTiming(
-      state.index * tabWidth + (tabWidth - indicatorWidth) / 2,
-      { duration: 250, easing: Easing.out(Easing.cubic) },
-    );
+    translateX.value = withTiming(state.index * tabWidth + (tabWidth - indicatorWidth) / 2, {
+      duration: 250,
+      easing: Easing.out(Easing.cubic),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.index, tabWidth, indicatorWidth]);
 
   const indicatorStyle = useAnimatedStyle(() => ({
@@ -116,11 +105,7 @@ export default function CustomTabBar({
               onLongPress={onLongPress}
               style={styles.tab}
             >
-              <Icon
-                size={24}
-                color={iconColor}
-                strokeWidth={isFocused ? 2.2 : 1.8}
-              />
+              <Icon size={24} color={iconColor} strokeWidth={isFocused ? 2.2 : 1.8} />
               <Text
                 style={[
                   styles.label,

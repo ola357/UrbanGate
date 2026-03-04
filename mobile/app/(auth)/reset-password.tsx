@@ -52,7 +52,7 @@ export default function ResetPasswordScreen() {
             [
               {
                 text: "OK",
-                onPress: () => router.dismissTo("./login" as any),
+                onPress: () => router.dismissTo("/login"),
               },
             ],
           );
@@ -76,18 +76,13 @@ export default function ResetPasswordScreen() {
 
   return (
     <View
-      style={[
-        tw`flex-1 px-6`,
-        { backgroundColor: colors.background, paddingTop: insets.top + 16 },
-      ]}
+      style={[tw`flex-1 px-6`, { backgroundColor: colors.background, paddingTop: insets.top + 16 }]}
     >
       <TouchableOpacity onPress={() => router.back()} style={tw`mb-6`}>
         <ChevronLeft size={28} color={colors.text} />
       </TouchableOpacity>
 
-      <Text style={[tw`text-3xl font-bold mb-2`, { color: colors.text }]}>
-        Reset password
-      </Text>
+      <Text style={[tw`text-3xl font-bold mb-2`, { color: colors.text }]}>Reset password</Text>
       <Text style={[tw`text-base mb-8`, { color: colors.textTertiary }]}>
         Create a new secure password
       </Text>
@@ -99,14 +94,11 @@ export default function ResetPasswordScreen() {
           value={password}
           onChangeText={(text) => {
             setPassword(text);
-            if (errors.password)
-              setErrors((e) => ({ ...e, password: undefined }));
+            if (errors.password) setErrors((e) => ({ ...e, password: undefined }));
           }}
           secureTextEntry={!showPassword}
           error={errors.password}
-          rightIcon={EyeToggle(showPassword, () =>
-            setShowPassword(!showPassword),
-          )}
+          rightIcon={EyeToggle(showPassword, () => setShowPassword(!showPassword))}
         />
         <Input
           variant="underlined"
@@ -114,8 +106,7 @@ export default function ResetPasswordScreen() {
           value={confirmPassword}
           onChangeText={(text) => {
             setConfirmPassword(text);
-            if (errors.confirmPassword)
-              setErrors((e) => ({ ...e, confirmPassword: undefined }));
+            if (errors.confirmPassword) setErrors((e) => ({ ...e, confirmPassword: undefined }));
           }}
           secureTextEntry={!showConfirm}
           error={errors.confirmPassword}

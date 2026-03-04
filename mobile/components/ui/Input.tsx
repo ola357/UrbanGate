@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  StyleProp,
-  Text,
-  TextInput,
-  TextInputProps,
-  TextStyle,
-  View,
-} from "react-native";
+import { StyleProp, Text, TextInput, TextInputProps, TextStyle, View } from "react-native";
 import tw from "twrnc";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "../useColorScheme";
@@ -45,11 +38,7 @@ export const Input = ({
         return [
           tw`border-2 rounded-lg`,
           {
-            borderColor: error
-              ? colors.error
-              : isFocused
-                ? colors.tintDark
-                : colors.border,
+            borderColor: error ? colors.error : isFocused ? colors.tintDark : colors.border,
             backgroundColor: colors.card,
           },
         ];
@@ -59,33 +48,21 @@ export const Input = ({
           {
             backgroundColor: colors.backgroundSecondary,
             borderBottomWidth: 2,
-            borderBottomColor: error
-              ? colors.error
-              : isFocused
-                ? colors.tintDark
-                : "transparent",
+            borderBottomColor: error ? colors.error : isFocused ? colors.tintDark : "transparent",
           },
         ];
       case "underlined":
         return [
           tw`border-0 border-b-2 rounded-none bg-transparent`,
           {
-            borderBottomColor: error
-              ? colors.error
-              : isFocused
-                ? colors.tintDark
-                : colors.border,
+            borderBottomColor: error ? colors.error : isFocused ? colors.tintDark : colors.border,
           },
         ];
       default:
         return [
           tw`border-2 rounded-lg`,
           {
-            borderColor: error
-              ? colors.error
-              : isFocused
-                ? colors.tintDark
-                : colors.border,
+            borderColor: error ? colors.error : isFocused ? colors.tintDark : colors.border,
             backgroundColor: colors.card,
           },
         ];
@@ -111,17 +88,11 @@ export const Input = ({
   return (
     <View style={tw`w-full`}>
       {label && (
-        <Text
-          style={[tw`text-sm font-medium mb-2`, { color: colors.textSecondary }]}
-        >
-          {label}
-        </Text>
+        <Text style={[tw`text-sm font-medium mb-2`, { color: colors.textSecondary }]}>{label}</Text>
       )}
       <View style={tw`relative`}>
         {leftIcon && (
-          <View style={tw`absolute left-3 top-0 h-full justify-center z-10`}>
-            {leftIcon}
-          </View>
+          <View style={tw`absolute left-3 top-0 h-full justify-center z-10`}>{leftIcon}</View>
         )}
         <TextInput
           style={
@@ -146,18 +117,12 @@ export const Input = ({
           }}
         />
         {rightIcon && (
-          <View style={tw`absolute right-3 top-0 h-full justify-center z-10`}>
-            {rightIcon}
-          </View>
+          <View style={tw`absolute right-3 top-0 h-full justify-center z-10`}>{rightIcon}</View>
         )}
       </View>
-      {error && (
-        <Text style={[tw`text-xs mt-1`, { color: colors.error }]}>{error}</Text>
-      )}
+      {error && <Text style={[tw`text-xs mt-1`, { color: colors.error }]}>{error}</Text>}
       {helperText && !error && (
-        <Text style={[tw`text-xs mt-1`, { color: colors.textTertiary }]}>
-          {helperText}
-        </Text>
+        <Text style={[tw`text-xs mt-1`, { color: colors.textTertiary }]}>{helperText}</Text>
       )}
     </View>
   );

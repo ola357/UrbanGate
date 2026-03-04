@@ -26,7 +26,7 @@ export default function ForgotPasswordScreen() {
     mutation.mutate(phone.trim(), {
       onSuccess: () => {
         router.push({
-          pathname: "./reset-otp" as any,
+          pathname: "/reset-otp",
           params: { phone: phone.trim() },
         });
       },
@@ -38,25 +38,18 @@ export default function ForgotPasswordScreen() {
 
   return (
     <View
-      style={[
-        tw`flex-1 px-6`,
-        { backgroundColor: colors.background, paddingTop: insets.top + 16 },
-      ]}
+      style={[tw`flex-1 px-6`, { backgroundColor: colors.background, paddingTop: insets.top + 16 }]}
     >
       <TouchableOpacity onPress={() => router.back()} style={tw`mb-6`}>
         <ChevronLeft size={28} color={colors.text} />
       </TouchableOpacity>
 
-      <Text style={[tw`text-3xl font-bold mb-2`, { color: colors.text }]}>
-        Forgot password
-      </Text>
+      <Text style={[tw`text-3xl font-bold mb-2`, { color: colors.text }]}>Forgot password</Text>
       <Text style={[tw`text-base mb-8`, { color: colors.textTertiary }]}>
-        Enter your phone number and we'll send you a code
+        Enter your phone number and we&apos;ll send you a code
       </Text>
 
-      {error ? (
-        <Text style={[tw`text-sm mb-4`, { color: colors.error }]}>{error}</Text>
-      ) : null}
+      {error ? <Text style={[tw`text-sm mb-4`, { color: colors.error }]}>{error}</Text> : null}
 
       <Input
         variant="underlined"

@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  ActivityIndicator,
-  Text,
-  TouchableOpacity,
-  TouchableOpacityProps,
-} from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps } from "react-native";
 import tw from "twrnc";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "../useColorScheme";
@@ -109,14 +104,12 @@ export const Button = ({
             variant === "outline" || variant === "ghost"
               ? colors.tintDark
               : variant === "secondary"
-              ? colors.buttonTextSecondary
-              : colors.buttonText
+                ? colors.buttonTextSecondary
+                : colors.buttonText
           }
         />
       ) : (
-        <Text style={[tw`font-medium`, sizeStyles.text, ...textStyles]}>
-          {children}
-        </Text>
+        <Text style={[tw`font-medium`, sizeStyles.text, ...textStyles]}>{children}</Text>
       )}
     </TouchableOpacity>
   );

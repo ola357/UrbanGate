@@ -34,11 +34,9 @@ export function Toast() {
           if (finished) runOnJS(clear)();
         }),
       );
-      opacity.value = withDelay(
-        TOAST_DURATION,
-        withTiming(0, { duration: ANIMATION_MS }),
-      );
+      opacity.value = withDelay(TOAST_DURATION, withTiming(0, { duration: ANIMATION_MS }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [message]);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -50,18 +48,11 @@ export function Toast() {
 
   return (
     <Animated.View
-      style={[
-        tw`absolute left-4 right-4 z-50`,
-        { top: insets.top + 8 },
-        animatedStyle,
-      ]}
+      style={[tw`absolute left-4 right-4 z-50`, { top: insets.top + 8 }, animatedStyle]}
       pointerEvents="none"
     >
       <View
-        style={[
-          tw`rounded-xl px-4 py-3 flex-row items-center`,
-          { backgroundColor: "#00352B" },
-        ]}
+        style={[tw`rounded-xl px-4 py-3 flex-row items-center`, { backgroundColor: "#00352B" }]}
       >
         <Text style={tw`text-base text-white`}>{message}</Text>
       </View>

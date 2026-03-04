@@ -24,10 +24,7 @@ export function NotificationBanner({
             {preview}
           </Text>
         </View>
-        <TouchableOpacity
-          onPress={onDismiss}
-          hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}
-        >
+        <TouchableOpacity onPress={onDismiss} hitSlop={{ top: 8, right: 8, bottom: 8, left: 8 }}>
           <X size={18} color="#FFFFFF" />
         </TouchableOpacity>
       </View>

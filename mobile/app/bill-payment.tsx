@@ -41,19 +41,12 @@ export default function BillPaymentScreen() {
     <View style={[styles.container, { backgroundColor: "#00483C" }]}>
       <BillPaymentHeader bill={bill} onBack={() => router.back()} />
 
-      <View
-        style={[
-          styles.content,
-          { backgroundColor: colors.backgroundSecondary },
-        ]}
-      >
+      <View style={[styles.content, { backgroundColor: colors.backgroundSecondary }]}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>
-            Payment method
-          </Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Payment method</Text>
 
           <View style={styles.methodList}>
             {PAYMENT_METHODS.map((method) => (

@@ -43,7 +43,7 @@ export default function ResetOtpScreen() {
       {
         onSuccess: ({ resetToken }) => {
           router.push({
-            pathname: "./reset-password" as any,
+            pathname: "/reset-password",
             params: { resetToken },
           });
         },
@@ -60,10 +60,7 @@ export default function ResetOtpScreen() {
 
   return (
     <View
-      style={[
-        tw`flex-1 px-6`,
-        { backgroundColor: colors.background, paddingTop: insets.top + 16 },
-      ]}
+      style={[tw`flex-1 px-6`, { backgroundColor: colors.background, paddingTop: insets.top + 16 }]}
     >
       <TouchableOpacity onPress={() => router.back()} style={tw`mb-6`}>
         <ChevronLeft size={28} color={colors.text} />
@@ -76,9 +73,7 @@ export default function ResetOtpScreen() {
         We sent a 6-digit code to {phone}
       </Text>
 
-      {error ? (
-        <Text style={[tw`text-sm mb-4`, { color: colors.error }]}>{error}</Text>
-      ) : null}
+      {error ? <Text style={[tw`text-sm mb-4`, { color: colors.error }]}>{error}</Text> : null}
 
       <OtpInput
         value={code}
@@ -96,9 +91,7 @@ export default function ResetOtpScreen() {
           </Text>
         ) : (
           <TouchableOpacity onPress={handleResend}>
-            <Text
-              style={[tw`text-sm font-medium underline`, { color: colors.tintDark }]}
-            >
+            <Text style={[tw`text-sm font-medium underline`, { color: colors.tintDark }]}>
               Resend code
             </Text>
           </TouchableOpacity>

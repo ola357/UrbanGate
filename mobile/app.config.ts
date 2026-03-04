@@ -7,12 +7,13 @@ const config: ExpoConfig = {
   scheme: "urbangate",
   version: "0.1.0",
   orientation: "portrait",
+  icon: "./assets/images/icon.png",
   userInterfaceStyle: "automatic",
-  android: {
-    package: "com.urbangate.app",
-  },
-  ios: {
-    bundleIdentifier: "com.urbangate.app",
+  newArchEnabled: true,
+  splash: {
+    image: "./assets/images/splash-icon.png",
+    resizeMode: "contain",
+    backgroundColor: "#ffffff",
   },
   plugins: ["expo-router", "@react-native-community/datetimepicker"],
   experiments: { typedRoutes: true },
@@ -32,6 +33,16 @@ const config: ExpoConfig = {
   },
   android: {
     package: "com.urbangate.app",
+    adaptiveIcon: {
+      foregroundImage: "./assets/images/adaptive-icon.png",
+      backgroundColor: "#ffffff",
+    },
+    edgeToEdgeEnabled: true,
+  },
+  web: {
+    bundler: "metro",
+    output: "static",
+    favicon: "./assets/images/favicon.png",
   },
 };
 
