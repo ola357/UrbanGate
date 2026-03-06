@@ -35,7 +35,7 @@ public class ApiExceptionHandler {
   public ProblemDetail handleGeneric(Exception ex, HttpServletRequest request) {
     var pd = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
     pd.setTitle("Internal error");
-    pd.setDetail("Unexpected error.");
+    pd.setDetail(ex.getMessage());
     pd.setProperty("code", ErrorCode.INTERNAL_ERROR.name());
     pd.setProperty("timestamp", Instant.now().toString());
     pd.setProperty("path", request.getRequestURI());
