@@ -44,6 +44,38 @@ services:
     depends_on:
       - redis
 
+
+
+
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    container_name: ug_keycloak
+    restart: unless-stopped
+    command: start-dev --import-realm
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/urbangate
+      KC_DB_USERNAME: urbangate
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-urbangate}
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-ug-admin_password}
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+    volumes:
+      - ./docker/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    ports:
+      - "8088:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -sf http://localhost:8080/health/ready || exit 1" ]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
 volumes:
   ug_postgres_data:
   ug_redis_data:
