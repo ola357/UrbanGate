@@ -13,5 +13,5 @@ locals {
 
   spring_profiles_active = var.spring_profiles_active != "" ? var.spring_profiles_active : var.env
   db_url                 = "jdbc:postgresql://${azurerm_postgresql_flexible_server.this.fqdn}:5432/${var.pg_db_name}?sslmode=require"
-  pg_user                = "${var.pg_admin_username}@${split(".", azurerm_postgresql_flexible_server.this.fqdn)[0]}"
+  pg_user                = var.pg_admin_username
 }
