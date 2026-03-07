@@ -33,3 +33,5 @@ node_modules/
 *.tfstate
 *.tfstate.*
 crash.log
+postman/
+**/.postman/
