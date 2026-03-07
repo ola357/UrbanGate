@@ -1,0 +1,45 @@
+# Default owners for everything
+* @ola357
+
+# =========================
+# Backend build and quality
+# =========================
+
+/backend/build.gradle.kts @ola357
+/backend/settings.gradle.kts @ola357
+/backend/gradle.properties @ola357
+/backend/gradle/** @ola357
+/backend/config/** @ola357
+/backend/build-logic/** @ola357
+
+# Protect all module build files
+/backend/**/build.gradle.kts @ola357
+
+# Protect docker/build infra for backend
+/backend/Dockerfile @ola357
+/backend/.dockerignore @ola357
+/backend/docker-compose*.yml @ola357
+
+# =========================
+# CI/CD and workflow files
+# =========================
+
+/.github/workflows/** @ola357
+/.github/CODEOWNERS @ola357
+
+# =========================
+# Infra / Terraform
+# =========================
+
+/infra/** @ola357
+
+# =========================
+# Mobile CI/CD and build
+# =========================
+
+# =========================
+# Optional docs / governance
+# =========================
+
+/README.md @ola357
+/GitVersion.yml @ola357
