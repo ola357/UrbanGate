@@ -43,7 +43,11 @@ export default function CreatePasswordScreen() {
 
     mutation.mutate(password, {
       onSuccess: (token) => {
-        login(token, user!);
+        if (!user) {
+          setErrors({ password: "Session expired. Please restart the sign-up process." });
+          return;
+        }
+        login(token, user);
       },
       onError: () => {
         setErrors({ password: "Something went wrong. Please try again." });

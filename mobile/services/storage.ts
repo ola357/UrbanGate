@@ -18,7 +18,12 @@ export const setSessionToken = (token: string) => {
 export const getUserData = (): UserData | undefined => {
   const raw = storage.getString(StorageKeys.USER_DATA);
   if (!raw) return undefined;
-  return JSON.parse(raw) as UserData;
+  try {
+    return JSON.parse(raw) as UserData;
+  } catch {
+    storage.remove(StorageKeys.USER_DATA);
+    return undefined;
+  }
 };
 
 export const setUserData = (data: UserData) => {
