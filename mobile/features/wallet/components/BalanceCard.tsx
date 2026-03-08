@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Plus } from "lucide-react-native";
-import { CitySkyline } from "./CitySkyline";
+
 
 interface BalanceCardProps {
   balance: number;

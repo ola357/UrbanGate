@@ -1,5 +1,5 @@
 import React, { memo, useState, useMemo, useCallback } from "react";
-import { View, Text, TouchableOpacity, Modal, Pressable } from "react-native";
+import { View, Text, TouchableOpacity, Modal, Pressable, StyleProp, ViewStyle } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { ChevronDown, Check } from "lucide-react-native";
 import tw from "twrnc";
@@ -10,7 +10,7 @@ import EventCard from "./EventCard";
 
 interface EventsListProps {
   events: EstateEvent[];
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
 const FILTER_OPTIONS: { key: EventFilter; label: string }[] = [

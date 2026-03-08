@@ -73,8 +73,8 @@ export default function EventSuccessScreen() {
     <View style={{ flex: 1, backgroundColor: "#00483C" }}>
       <ScrollView
         contentContainerStyle={{
+          flexGrow: 1,
           paddingTop: insets.top + 16,
-          paddingBottom: insets.bottom + 24,
         }}
         showsVerticalScrollIndicator={false}
       >
@@ -123,8 +123,8 @@ export default function EventSuccessScreen() {
             backgroundColor: colors.background,
             paddingHorizontal: 20,
             paddingTop: 28,
-            paddingBottom: 40,
-            minHeight: 400,
+            paddingBottom: insets.bottom + 40,
+            flex: 1,
           }}
         >
           {/* Code badge */}
@@ -238,9 +238,7 @@ export default function EventSuccessScreen() {
                           backgroundColor: "#4CAF50",
                         }}
                       />
-                      <Text style={{ color: "#2E7D32", fontSize: 13, marginLeft: 4 }}>
-                        Active
-                      </Text>
+                      <Text style={{ color: "#2E7D32", fontSize: 13, marginLeft: 4 }}>Active</Text>
                     </View>
                   ) : (
                     <Text style={{ fontSize: 14, color: colors.text }}>{row.value}</Text>

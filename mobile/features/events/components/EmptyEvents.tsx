@@ -1,11 +1,11 @@
 import React, { memo } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleProp, ViewStyle } from "react-native";
 import { CalendarPlus } from "lucide-react-native";
 import tw from "twrnc";
 
 interface EmptyEventsProps {
   onCreateEvent: () => void;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
 const EmptyEvents: React.FC<EmptyEventsProps> = memo(

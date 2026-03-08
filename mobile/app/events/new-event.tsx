@@ -159,11 +159,66 @@ export default function NewEventScreen() {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!form.name.trim()) newErrors.name = "Event name is required";
-    if (!form.date) newErrors.date = "Please select a date";
-    if (!form.expectedGuests.trim()) newErrors.expectedGuests = "Number of guests is required";
-    if (!form.location.trim()) newErrors.location = "Location is required";
-    if (!form.duration.trim()) newErrors.duration = "Duration is required";
+
+    // Event name
+    const name = form.name.trim();
+    if (!name) {
+      newErrors.name = "Event name is required";
+    } else if (name.length < 2) {
+      newErrors.name = "Event name must be at least 2 characters";
+    } else if (name.length > 100) {
+      newErrors.name = "Event name must be under 100 characters";
+    }
+
+    // Date
+    if (!form.date) {
+      newErrors.date = "Please select a date";
+    } else {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const selected = new Date(form.date);
+      selected.setHours(0, 0, 0, 0);
+      if (selected < today) {
+        newErrors.date = "Date cannot be in the past";
+      }
+    }
+
+    // Expected guests
+    const guestsStr = form.expectedGuests.trim();
+    if (!guestsStr) {
+      newErrors.expectedGuests = "Number of guests is required";
+    } else if (!/^\d+$/.test(guestsStr)) {
+      newErrors.expectedGuests = "Please enter a valid number";
+    } else {
+      const guests = parseInt(guestsStr, 10);
+      if (guests < 1) {
+        newErrors.expectedGuests = "Must have at least 1 guest";
+      } else if (guests > 10000) {
+        newErrors.expectedGuests = "Cannot exceed 10,000 guests";
+      }
+    }
+
+    // Location
+    const location = form.location.trim();
+    if (!location) {
+      newErrors.location = "Location is required";
+    } else if (location.length < 2) {
+      newErrors.location = "Location must be at least 2 characters";
+    }
+
+    // Duration
+    const durationStr = form.duration.trim();
+    if (!durationStr) {
+      newErrors.duration = "Duration is required";
+    } else {
+      const durationNum = parseInt(durationStr, 10);
+      if (isNaN(durationNum) || durationNum < 1) {
+        newErrors.duration = "Please enter a valid duration (e.g. 2 hours)";
+      } else if (durationNum > 72) {
+        newErrors.duration = "Duration cannot exceed 72 hours";
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -235,6 +290,7 @@ export default function NewEventScreen() {
           value={form.name}
           onChangeText={(v) => updateField("name", v)}
           error={errors.name}
+          maxLength={100}
         />
 
         <DateField
@@ -249,8 +305,9 @@ export default function NewEventScreen() {
           placeholder="Enter number"
           keyboardType="number-pad"
           value={form.expectedGuests}
-          onChangeText={(v) => updateField("expectedGuests", v)}
+          onChangeText={(v) => updateField("expectedGuests", v.replace(/[^0-9]/g, ""))}
           error={errors.expectedGuests}
+          maxLength={5}
         />
 
         <Input

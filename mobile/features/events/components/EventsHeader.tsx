@@ -1,12 +1,12 @@
 import React, { memo } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleProp, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Plus } from "lucide-react-native";
 import tw from "twrnc";
 
 interface EventsHeaderProps {
   onAdd: () => void;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
 const EventsHeader: React.FC<EventsHeaderProps> = memo(({ onAdd, style }) => {

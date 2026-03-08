@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from "react";
-import { View, Text, TouchableOpacity, Share } from "react-native";
+import { View, Text, TouchableOpacity, Share, StyleProp, ViewStyle } from "react-native";
 import { ChevronDown, LayoutGrid, Copy, Share as ShareIcon } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import tw from "twrnc";
@@ -9,7 +9,7 @@ import { EstateEvent } from "../types";
 
 interface EventCardProps {
   event: EstateEvent;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 }
 
 function formatDateParts(isoDate: string): { day: string; month: string } {
