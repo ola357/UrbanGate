@@ -1,18 +1,26 @@
-import { StyleSheet } from "react-native";
-
-import { Text, View } from "@/components/Themed";
-import { Button } from "@/components/ui/Buttons";
-import { useAuthStore } from "@/store/authStore";
+import React from "react";
+import { View, ScrollView, StyleSheet } from "react-native";
+import Colors from "@/constants/Colors";
+import { useColorScheme } from "@/components/useColorScheme";
+import ContactsHeader from "@/features/contacts/components/ContactsHeader";
+import CategoryList from "@/features/contacts/components/CategoryList";
 
 export default function ContactsScreen() {
-  const logout = useAuthStore((s) => s.logout);
+  const colorScheme = useColorScheme() ?? "light";
+  const colors = Colors[colorScheme];
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Contacts</Text>
-      <Button variant="secondary" onPress={logout} style={{ marginTop: 24 }}>
-        Logout
-      </Button>
+    <View style={[styles.container, { backgroundColor: "#E8F5E9" }]}>
+      <ContactsHeader />
+
+      <View style={[styles.content, { backgroundColor: colors.backgroundSecondary }]}>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 24 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <CategoryList />
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -20,16 +28,10 @@ export default function ContactsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+  content: {
+    flex: 1,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
 });

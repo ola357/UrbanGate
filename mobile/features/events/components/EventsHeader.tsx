@@ -14,14 +14,10 @@ const EventsHeader: React.FC<EventsHeaderProps> = memo(({ onAdd, style }) => {
 
   return (
     <View
-      style={[
-        tw`px-4 pb-5`,
-        { backgroundColor: "#00483C", paddingTop: insets.top + 16 },
-        style,
-      ]}
+      style={[tw`px-4 pb-5`, { backgroundColor: "#00483C", paddingTop: insets.top + 16 }, style]}
     >
       <View style={tw`flex-row items-center justify-between`}>
-        <Text style={tw`text-white text-[28px] font-bold`}>Events</Text>
+        <Text style={tw`text-white text-[24px] font-bold`}>Events</Text>
         <TouchableOpacity
           onPress={onAdd}
           style={[

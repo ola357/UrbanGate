@@ -82,6 +82,7 @@ function RootLayoutNav() {
         <Stack.Screen name="access-code" />
         <Stack.Screen name="bill-payment" />
         <Stack.Screen name="events" />
+        <Stack.Screen name="contacts" />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
       </Stack>
       {isAuthenticated ? <Redirect href="/(tabs)" /> : <Redirect href="/(auth)/welcome" />}
