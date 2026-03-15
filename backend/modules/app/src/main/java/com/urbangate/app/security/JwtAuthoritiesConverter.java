@@ -18,7 +18,6 @@ public class JwtAuthoritiesConverter implements Converter<Jwt, Collection<Grante
   private static final String CLIENT_ID = "ug-api";
 
   @Override
-  @Nullable
   public Collection<GrantedAuthority> convert(@Nullable Jwt jwt) {
     if (jwt == null) {
       return List.of();
