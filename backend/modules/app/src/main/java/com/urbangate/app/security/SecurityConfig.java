@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -27,6 +26,7 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 @EnableMethodSecurity
 @EnableConfigurationProperties(UrbangateSecurityProperties.class)
 public class SecurityConfig {
+  private static final String[] CSRF_IGNORED_PATHS = {"/api/**", "/actuator/**"};
 
   @Bean
   public TenantContextFilter tenantContextFilter(
@@ -39,7 +39,7 @@ public class SecurityConfig {
   public SecurityFilterChain securedSecurityFilterChain(
       HttpSecurity http, TenantContextFilter tenantContextFilter, UrbangateSecurityProperties props)
       throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable)
+    http.csrf(csrf -> csrf.ignoringRequestMatchers(CSRF_IGNORED_PATHS))
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers("/api/v1/version", "/actuator/health/**")
@@ -71,7 +71,7 @@ public class SecurityConfig {
       matchIfMissing = true)
   public SecurityFilterChain openSecurityFilterChain(
       HttpSecurity http, TenantContextFilter tenantContextFilter) throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable)
+    http.csrf(csrf -> csrf.ignoringRequestMatchers(CSRF_IGNORED_PATHS))
         .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
     http.addFilterAfter(tenantContextFilter, SecurityContextHolderFilter.class);
