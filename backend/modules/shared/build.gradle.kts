@@ -7,5 +7,10 @@ plugins {
 dependencies {
     implementation("org.springframework:spring-context")
     implementation("org.springframework:spring-web")
+    implementation("org.springframework.security:spring-security-core")
+    implementation("org.springframework.security:spring-security-oauth2-jose")
     implementation("jakarta.validation:jakarta.validation-api")
+
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

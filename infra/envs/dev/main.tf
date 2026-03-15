@@ -14,4 +14,7 @@ module "stack" {
   backend_image              = var.backend_image
   urbangate_security_enabled = var.urbangate_security_enabled
   keycloak_issuer_uri        = var.keycloak_issuer_uri
+
+  web_app_sku_name     = var.web_app_sku_name
+  web_app_node_version = var.web_app_node_version
 }

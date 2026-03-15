@@ -49,3 +49,13 @@ variable "revision_mode" {
   type    = string
   default = "Single"
 }
+
+variable "web_app_sku_name" {
+  type    = string
+  default = "B1"
+}
+
+variable "web_app_node_version" {
+  type    = string
+  default = "20-lts"
+}

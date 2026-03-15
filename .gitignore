@@ -35,3 +35,4 @@ node_modules/
 crash.log
 postman/
 **/.postman/
+AGENT.md

@@ -45,3 +45,13 @@ variable "backend_image" {
   type    = string
   default = ""
 }
+
+variable "web_app_sku_name" {
+  type    = string
+  default = "B1"
+}
+
+variable "web_app_node_version" {
+  type    = string
+  default = "20-lts"
+}
