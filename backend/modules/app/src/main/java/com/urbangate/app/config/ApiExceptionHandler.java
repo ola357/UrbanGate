@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+  private static final String TIMESTAMP_PROPERTY = "timestamp";
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ProblemDetail handleValidation(
@@ -22,7 +23,7 @@ public class ApiExceptionHandler {
     pd.setTitle("Validation error");
     pd.setDetail("One or more fields are invalid.");
     pd.setProperty("code", ErrorCode.VALIDATION_ERROR.name());
-    pd.setProperty("timestamp", Instant.now().toString());
+    pd.setProperty(TIMESTAMP_PROPERTY, Instant.now().toString());
     pd.setProperty("path", request.getRequestURI());
     pd.setProperty(
         "errors",
@@ -38,7 +39,7 @@ public class ApiExceptionHandler {
     pd.setTitle("Internal error");
     pd.setDetail("Unexpected error.");
     pd.setProperty("code", ErrorCode.INTERNAL_ERROR.name());
-    pd.setProperty("timestamp", Instant.now().toString());
+    pd.setProperty(TIMESTAMP_PROPERTY, Instant.now().toString());
     pd.setProperty("path", request.getRequestURI());
     return pd;
   }
@@ -58,7 +59,7 @@ public class ApiExceptionHandler {
     var pd = ProblemDetail.forStatus(status);
     pd.setTitle(title);
     pd.setDetail(detail);
-    pd.setProperty("timestamp", Instant.now().toString());
+    pd.setProperty(TIMESTAMP_PROPERTY, Instant.now().toString());
     pd.setProperty("path", request.getRequestURI());
     return pd;
   }
