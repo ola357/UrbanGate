@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PasswordResetService {
+  private static final String RESIDENT_NOT_FOUND = "Resident not found for estate";
+
   private final PasswordResetRepository passwordResetRepository;
   private final ResidentRepository residentRepository;
   private final PasswordResetProperties passwordResetProperties;
@@ -46,7 +48,7 @@ public class PasswordResetService {
     Resident resident =
         residentRepository
             .findByEstateIdAndId(estateId, residentId)
-            .orElseThrow(() -> new IllegalArgumentException("Resident not found for estate"));
+            .orElseThrow(() -> new IllegalArgumentException(RESIDENT_NOT_FOUND));
     return issueResetCodeInternal(resident);
   }
 
@@ -56,7 +58,7 @@ public class PasswordResetService {
     Resident resident =
         residentRepository
             .findByEstateIdAndPhone(estateId, phone)
-            .orElseThrow(() -> new IllegalArgumentException("Resident not found for estate"));
+            .orElseThrow(() -> new IllegalArgumentException(RESIDENT_NOT_FOUND));
     return issueResetCodeInternal(resident);
   }
 
@@ -66,7 +68,7 @@ public class PasswordResetService {
     Resident resident =
         residentRepository
             .findByEstateIdAndId(estateId, residentId)
-            .orElseThrow(() -> new IllegalArgumentException("Resident not found for estate"));
+            .orElseThrow(() -> new IllegalArgumentException(RESIDENT_NOT_FOUND));
     confirmResetInternal(resident, code, newPassword);
   }
 
@@ -76,7 +78,7 @@ public class PasswordResetService {
     Resident resident =
         residentRepository
             .findByEstateIdAndPhone(estateId, phone)
-            .orElseThrow(() -> new IllegalArgumentException("Resident not found for estate"));
+            .orElseThrow(() -> new IllegalArgumentException(RESIDENT_NOT_FOUND));
     confirmResetInternal(resident, code, newPassword);
   }
 

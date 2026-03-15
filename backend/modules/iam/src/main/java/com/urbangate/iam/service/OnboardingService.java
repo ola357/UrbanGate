@@ -12,28 +12,33 @@ import com.urbangate.shared.tenant.TenantContext;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.UUID;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OnboardingService {
   private static final int UNIQUE_CODE_RETRIES = 6;
+  private static final String RESIDENT_NOT_FOUND = "Resident not found for estate";
 
   private final ActivationCodeRepository activationCodeRepository;
   private final ResidentRepository residentRepository;
   private final ActivationCodeProperties activationCodeProperties;
   private final EmailNotificationService emailNotificationService;
+  private final OnboardingService self;
   private final SecureRandom random = new SecureRandom();
 
   public OnboardingService(
       ActivationCodeRepository activationCodeRepository,
       ResidentRepository residentRepository,
       ActivationCodeProperties activationCodeProperties,
-      EmailNotificationService emailNotificationService) {
+      EmailNotificationService emailNotificationService,
+      @Lazy OnboardingService self) {
     this.activationCodeRepository = activationCodeRepository;
     this.residentRepository = residentRepository;
     this.activationCodeProperties = activationCodeProperties;
     this.emailNotificationService = emailNotificationService;
+    this.self = self;
   }
 
   @Transactional
@@ -42,7 +47,7 @@ public class OnboardingService {
     Resident resident =
         residentRepository
             .findByEstateIdAndId(estateId, residentId)
-            .orElseThrow(() -> new IllegalArgumentException("Resident not found for estate"));
+            .orElseThrow(() -> new IllegalArgumentException(RESIDENT_NOT_FOUND));
 
     String code = generateUniqueCode();
     ActivationCode activationCode = new ActivationCode();
@@ -56,7 +61,7 @@ public class OnboardingService {
 
   @Transactional
   public Resident activateResident(String activationCode) {
-    return activateResident(activationCode, null);
+    return self.activateResident(activationCode, null);
   }
 
   @Transactional
