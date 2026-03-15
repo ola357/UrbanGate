@@ -15,7 +15,8 @@
     "test": "jest",
     "test:ci": "jest --ci",
     "test:watch": "jest --watch",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "clean": "rm -rf node_modules .pnpm-lock.yaml dist"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.59.16",

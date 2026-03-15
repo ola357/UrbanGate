@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,6 +38,26 @@ public class ApiExceptionHandler {
     pd.setTitle("Internal error");
     pd.setDetail("Unexpected error.");
     pd.setProperty("code", ErrorCode.INTERNAL_ERROR.name());
+    pd.setProperty("timestamp", Instant.now().toString());
+    pd.setProperty("path", request.getRequestURI());
+    return pd;
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ProblemDetail handleBadRequest(IllegalArgumentException ex, HttpServletRequest request) {
+    return buildProblemDetail(HttpStatus.BAD_REQUEST, "Bad request", ex.getMessage(), request);
+  }
+
+  @ExceptionHandler(IllegalStateException.class)
+  public ProblemDetail handleConflict(IllegalStateException ex, HttpServletRequest request) {
+    return buildProblemDetail(HttpStatus.CONFLICT, "Conflict", ex.getMessage(), request);
+  }
+
+  private ProblemDetail buildProblemDetail(
+      HttpStatusCode status, String title, String detail, HttpServletRequest request) {
+    var pd = ProblemDetail.forStatus(status);
+    pd.setTitle(title);
+    pd.setDetail(detail);
     pd.setProperty("timestamp", Instant.now().toString());
     pd.setProperty("path", request.getRequestURI());
     return pd;

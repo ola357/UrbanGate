@@ -10,6 +10,8 @@ locals {
   log_analytics_name  = "${local.prefix}-law"
   postgres_name       = "${local.prefix}-pg"
   container_app_name  = "${local.prefix}-backend"
+  web_app_plan_name   = "${local.prefix}-web-asp"
+  web_app_name        = "${local.prefix}-web"
 
   spring_profiles_active = var.spring_profiles_active != "" ? var.spring_profiles_active : var.env
   db_url                 = "jdbc:postgresql://${azurerm_postgresql_flexible_server.this.fqdn}:5432/${var.pg_db_name}?sslmode=require"

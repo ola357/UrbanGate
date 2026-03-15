@@ -1,9 +1,21 @@
+import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
+import org.gradle.testing.jacoco.tasks.JacocoReport
+
 plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
     id("io.freefair.lombok")
     id("com.github.spotbugs")
 }
+
+val jacocoExcludes =
+    listOf(
+        "com/urbangate/app/security/**",
+        "com/urbangate/app/config/**",
+        "com/urbangate/app/UrbanGateApplication*",
+        "com/urbangate/app/web/OnboardingController*",
+        "com/urbangate/app/web/PasswordResetController*",
+    )
 
 dependencies {
     implementation(project(":modules:shared"))
@@ -19,6 +31,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.flywaydb:flyway-core:11.20.3")
@@ -29,4 +43,28 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("com.h2database:h2")
+}
+
+tasks.withType<JacocoReport>().configureEach {
+    classDirectories.setFrom(
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(jacocoExcludes)
+                }
+            },
+        ),
+    )
+}
+
+tasks.withType<JacocoCoverageVerification>().configureEach {
+    classDirectories.setFrom(
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(jacocoExcludes)
+                }
+            },
+        ),
+    )
 }

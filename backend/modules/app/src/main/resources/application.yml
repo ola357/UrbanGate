@@ -3,6 +3,11 @@ spring:
     name: urbangate-backend
   profiles:
     active: dev
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:}
 
 server:
   port: 8080
@@ -19,3 +24,28 @@ management:
 
 urbangate:
   env: dev
+  security:
+    enabled: false
+    tenant-claim: estate_id
+    tenant-header: X-Estate-Id
+    allow-header-tenant: false
+    roles-claim: realm_access.roles
+    resource-client-id: urbangate-backend
+    lockout:
+      window: 30m
+      max-failures: 3
+  onboarding:
+    activation-code:
+      ttl: 48h
+      length: 8
+    password-reset:
+      ttl: 5m
+      code-length: 6
+      max-attempts: 3
+  keycloak:
+    admin:
+      enabled: false
+      base-url: ${KEYCLOAK_BASE_URL:}
+      realm: ${KEYCLOAK_REALM:}
+      client-id: ${KEYCLOAK_CLIENT_ID:}
+      client-secret: ${KEYCLOAK_CLIENT_SECRET:}
