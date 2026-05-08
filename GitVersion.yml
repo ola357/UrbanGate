@@ -1,0 +1,14 @@
+mode: ContinuousDelivery
+next-version: 0.1.0
+
+branches:
+  main:
+    regex: ^main$
+    increment: Minor
+    label: ""
+
+  feature:
+    regex: ^feature[/-](?<BranchName>.+)
+    increment: Inherit
+    source-branches: [ main ]
+    label: "{BranchName}"

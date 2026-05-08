@@ -1,3 +1,4 @@
+import com.github.spotbugs.snom.SpotBugsTask
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.plugins.quality.CheckstyleExtension
 
@@ -45,6 +46,12 @@ subprojects {
         toolVersion = "10.12.5"
         configDirectory.set(rootProject.file("config/checkstyle"))
         isIgnoreFailures = false
+    }
+
+    plugins.withId("com.github.spotbugs") {
+        tasks.withType<SpotBugsTask>().configureEach {
+            excludeFilter.set(rootProject.file("config/spotbugs/exclude.xml"))
+        }
     }
 
     tasks.withType<JacocoReport> {
@@ -112,7 +119,7 @@ tasks.register("lint") {
 
 // SonarCloud config (fill required props in CI)
 
-sonarqube {
+sonar {
     properties {
         property("sonar.sourceEncoding", "UTF-8")
         property("sonar.java.coveragePlugin", "jacoco")
